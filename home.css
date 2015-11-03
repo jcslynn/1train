@@ -1,0 +1,319 @@
+body {
+	font-family: "Goudy Bookletter 1911", sans-serif;
+	color: white;
+	margin: 50px;
+	background-color: white;
+}
+
+#demographic:nth-child(6-n) {
+	color: yellow;
+}
+
+#demographic > div:nth-child(n+6) {
+	background-color: #7BAFD4;
+	border: solid 2px #1f2d5c;
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+
+div h4:first-child {
+	text-align: center;
+	font-size: 110%;
+}
+
+#demographic {
+	width: 100%;
+	position: relative;
+}
+
+#demographic h1 {
+	width: 50%;
+	color: #1f2d5c;
+}
+
+#demographic h1:hover {
+	color: #7BAFD4;
+}
+
+#demographic h2 {
+	margin-top: -20px;
+	width: 50%;
+	color: #1f2d5c;
+}
+
+#demographic h2:hover {
+	color: #7BAFD4;
+}
+
+#demographic h3 {
+	margin-top: -20px;
+	width: 50%;
+	color: #1f2d5c;
+}
+
+#demographic h3:hover {
+	color: #7BAFD4;
+}
+
+#contact {
+	color: #1f2d5c;
+	position: absolute;
+	right: 0;
+	top: 0px;
+	width: 20%;
+	height: 100px;
+}
+
+#contact div {
+	text-align: right;
+    margin-left: 0;
+    margin-right: 0;
+    font-weight: bold;
+    line-height: 110%;
+}
+
+#address > div:hover {
+	color: #7BAFD4;
+}
+
+#address {
+	text-align: right;
+	font-size: 105%;
+}
+
+/*
+#address div:nth-child(1)
+{
+	float: left;
+}
+
+#address div:nth-child(2)
+{
+	float: left;
+	padding-left: 5px;
+}
+#address div:nth-child(3)
+{
+	float: left;
+	width: 50%;
+}
+*/
+
+#email {
+	text-decoration: underline;
+}
+
+#email:hover {
+	color: #7BAFD4;
+}
+
+#phone:hover {
+	color: #7BAFD4;	
+}
+
+#biographical {
+	height: 150px;
+}
+
+.title {
+	font-style: italic;
+}
+
+.degree {
+	font-size: 20px;
+	color: #1f2d5c;
+}
+
+.education {
+	list-style-type: none;
+	width: 32%;
+	float: left;
+}
+
+#prof_experience {
+	height: 325px;
+}
+
+.experience {
+	width: 50%;
+	float: left;
+	margin-bottom: 10px;
+}
+
+.experience>div {
+	height: auto;
+    margin-left: 125px;
+}
+
+#notables {
+	height: 140px;
+}
+
+#notables li {
+	list-style-type: none;
+	width: 50%;
+	float: left;
+	margin-bottom: 10px;
+}
+
+#bio {
+	height: 150px;
+	position: relative;
+}
+
+#bio div {
+	float: left;
+}
+
+#bio>div:nth-child(2) {
+	width: 80%;
+	margin-left: 25px;
+}
+
+img {
+	position: absolute;
+	right: 25px;
+	top: 7.5px;
+	height: 90%;
+}
+
+.jobtitle {
+	color: #1f2d5c;
+}
+
+.duration {
+	font-style: italic;
+}
+
+h4 {
+	text-align: center;
+	font-size: 110%;
+	color: #1f2d5c;
+}
+
+div h3:first-child {
+	text-align: center;
+	font-size: 110%;
+	color: #1f2d5c;
+}
+
+#research {
+	background-color: #7BAFD4;
+	border: solid 2px #1f2d5c;
+	margin-top: 15px;
+	height: 400px;
+}
+
+.project {
+	width: 50%;
+	float: left;
+	margin-bottom: 10px;
+}
+
+.project>div {
+	height: auto;
+    margin-left: 25px;
+    margin-right: 25px;
+}
+
+.project>.title {
+	color: #1f2d5c;
+	font-style: normal;
+	font-weight: bold;
+	text-decoration: underline;
+	margin-bottom: 5px;
+}
+
+#teaching {
+	background-color: #7BAFD4;
+	border: solid 2px #1f2d5c;
+	margin-top: 15px;
+	margin-bottom: 15px;
+	height: auto;
+}
+
+
+.course {
+	margin-bottom: 10px;
+}
+
+.course>div {
+	height: auto;
+    margin-left: 25px;
+    margin-right: 25px;
+}
+
+.course .title {
+	color: #1f2d5c;
+}
+
+.last {
+	font-family: monospace;
+	color: #1f2d5c;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+#publications {
+	background-color: #7BAFD4;
+	border: solid 2px #1f2d5c;
+	margin-top: 15px;
+	margin-bottom: 15px;
+	height: 650px;
+}
+
+#journals {
+	height: 225px;
+	margin-left: 50px;
+	margin-right: 50px;
+}
+
+#publications div h4:first-child {
+	text-align: left;
+}
+
+#journals > .citation {
+	float: left;
+	margin-bottom: 10px;
+	text-align: left;
+	width: 50%;
+	height: 90px;
+}
+
+.citation {
+	margin-bottom: 10px;
+}
+
+#journals > div:nth-child(2n+1) > div {
+	margin-left: 25px;
+}
+
+#journals > div:nth-child(2n) > div {
+	margin-right: 25px;
+}
+
+.authors {
+	color: #1f2d5c;
+}
+
+#conferences {
+	height: 275px;
+	margin-left: 50px;
+	margin-right: 50px;
+}
+
+#conferences > .citation {
+	float: left;
+	margin-bottom: 10px;
+	text-align: left;
+	width: 50%;
+	height: 90px;
+}
+
+#conferences > div:nth-child(2n+1) > div {
+	margin-left: 25px;
+}
+
+#conferences > div:nth-child(2n) > div {
+	margin-right: 25px;
+}
