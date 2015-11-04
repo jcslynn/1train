@@ -1,0 +1,63 @@
+.category {
+	position: absolute;
+	margin: auto 0;
+}
+
+#music div div {
+	background-color: #345496;
+}
+
+#sports div div {
+	background-color: #ffcc5a;
+}
+
+#art div div {
+	background-color: #ffcc5a;
+}
+
+#fashion div div {
+	background-color: #6699ff;
+}
+
+#main {
+	positon: relative;  
+	margin: 10px;
+}
+
+.cat_div {
+	position: relative;
+}
+
+
+#logo img {
+	position: absolute;
+	margin: auto;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+
+.cell img {
+	position: absolute;
+	margin: auto;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+
+.cell {
+	position: relative;
+}
+
+#music > .cat_div > p {
+	margin: auto;
+	width: 100%;
+	/*top: 0;
+	bottom: 0;
+	left: 10%;
+	right: 0;
+	*/
+}
+
