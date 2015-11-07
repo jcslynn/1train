@@ -14,7 +14,7 @@ html {
 }
 
 
-img {
+#media-bar img {
 	position: absolute;
 }
 
@@ -39,7 +39,7 @@ a:hover {
 #center-div wrapper {
 	position: relative;
 	width: 100%;
-	height: auto;
+	height: 100%;
 }
 
 #media-bar {
@@ -48,18 +48,4 @@ a:hover {
 	left: 0;
 	background-color: black;
 	width: 100%;
-}
-
-#media-bar-wrapper {
-	position: relative;
-	height: 100%;
-	width: 100%;
-}
-
-#media-bar-wrapper > div {
-	position: absolute;
-}
-
-#song-queue {
-	right: 0;
 }
