@@ -1,63 +1,51 @@
-.category {
+html {
+	background-color: white;
+	font-family: "hobo-std", sans-serif;
+}
+
+#main-container {
 	position: absolute;
-	margin: auto 0;
-}
-
-#music div div {
-	background-color: #345496;
-}
-
-#sports div div {
-	background-color: #ffcc5a;
-}
-
-#art div div {
-	background-color: #ffcc5a;
-}
-
-#fashion div div {
-	background-color: #6699ff;
-}
-
-#main {
-	positon: relative;  
-	margin: 10px;
-}
-
-.cat_div {
-	position: relative;
-}
-
-
-#logo img {
-	position: absolute;
-	margin: auto;
 	top: 0;
-	bottom: 0;
 	left: 0;
-	right: 0;
+	/*background-image: url("1train-logo-clean.png");
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: auto;*/
 }
 
-.cell img {
+
+#media-bar img {
 	position: absolute;
-	margin: auto;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
 }
 
-.cell {
+#links-div {
+	position: absolute;
+}
+
+.links {
+	display: inline;
+	font-size: 200%;
+}
+
+.links > a {
+	color: black;
+}
+
+a:hover {
+	color: #ff0016;
+	text-decoration: underline;
+}
+
+#center-div wrapper {
 	position: relative;
-}
-
-#music > .cat_div > p {
-	margin: auto;
 	width: 100%;
-	/*top: 0;
-	bottom: 0;
-	left: 10%;
-	right: 0;
-	*/
+	height: 100%;
 }
 
+#media-bar {
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-color: black;
+	width: 100%;
+}
