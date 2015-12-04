@@ -16,6 +16,84 @@ $(document).ready(function(){
 	$("#volume").css({ "right": $("#song-queue").width() * 3 - 10});
 
 	switch_to_homepage();
+});
+
+var leftDivWrapper = $('<div id="left-div-wrapper"><img id="logo" src="photoshop/1train-logo-clean.png"><div id="links-div" class="tk-hobo-std"><div class="links"><a>hottest</a></div><div class="links"> | </div><div class="links"><a>newest</a></div><div class="links"> | </div><div class="links"><a>random</a></div></div><div id="carousel"><img src="photoshop/carousel-headphones-black-red.png"><div id="carousel-text">text should change with image</div></div></div>');
+
+var switch_to_homepage = function (){
+	var mainContent = $('#main-content');
+	mainContent.empty();
+
+	//populate home page
+
+	mainContent.append($('<div id="center"></div>'));
+	mainContent.css({ "height": window_height - media_bar_height });
+
+	$('#center').css({ "position": "relative", "margin": "auto 0", "top": 0, "bottom": 0, "left": 0, "right": 0, "height": "auto", "width": "auto" });
+	$('#center').append($('<div id="logo-div"></div>'));
+	$('#logo-div').append($('<img id="logo" src="photoshop/1train-logo-clean.png">'));
+	$('#logo-div').css({ "position": "relative", "top": ((window_height - media_bar_height) / 2) - ($('#logo').height() / (4/3)),
+												"width": "100%", "height": $('#logo').height() });
+	$('#logo').css({"position":"absolute", "left": window_width / 2 - $('#logo').width() / 2 });
+
+	$('#center').append($('<div id="links-div"></div>'));
+	$('#links-div').append($('<div class="link" id="1">music</div>'));
+	$('#links-div').append($('<div class="bar"> | </div>'));
+	$('#links-div').append($('<div class="link" id="2">sports</div>'));
+	$('#links-div').append($('<div class="bar"> | </div>'));
+	$('#links-div').append($('<div class="link" id="3">about</div>'));
+	$('.bar').css({ "display":"inline" });
+	$('.link').css({ "display":"inline" });
+	$('#links-div').css({ "font-size": "200%", "text-align":"center", "width": "100%", "position": "absolute",
+												"top": parseInt($('#logo-div').css('top')) + $('#logo-div').height() / (6/5) });
+	$('#center').append($('#links-div'));
+
+	$.ajax("controller.php/home",{
+		type: "GET",
+		datatype: "json",
+		success: function(textStatus, jqXHR){
+			$('#links-div > #1').on('click', switch_to_music);
+			$('#links-div > #2').on('click', switch_to_sports);
+			$('#links > #3').on('click', switch_to_about);
+		}
+	});
+};
+
+var switch_to_music = function () {
+
+	var mainContent = $('#main-content');
+	mainContent.empty();
+
+	// alert("cool");
+	mainContent.append($('<div id="left"></div>'));
+	$('#left').css({ "width": "50%", "height": "100%", "position": "absolute", "top": 0, "left": 0 });
+	$('#left').append($('<div id="left-top"></div>'));
+
+	$('#left-top').css({ "position": "relative", "margin": "auto 0", "top": 0, "bottom": 0, "left": 0, "right": 0, "height": "50%", "width": "auto" });
+	$('#left-top').append($('<div id="logo-div"></div>'));
+	$('#logo-div').append($('<img id="logo" src="photoshop/1train-logo-clean.png">'));
+	$('#logo-div').css({ "position": "relative", "width": "100%", "height": $('#logo').height() });
+	$('#logo').css({ "position": "absolute", "left": ($('#logo-div').width() / 2) - ($('#logo').width() / 2),
+ 										"top":  ($('#left-top').height() / 2) - ($('#logo').height() / 2)});
+	$('#left-top').append($('<div id="links-div"></div>'));
+	$('#links-div').append($('<div class="link" id="1">music</div>'));
+	$('#links-div').append($('<div class="bar"> | </div>'));
+	$('#links-div').append($('<div class="link" id="2">sports</div>'));
+	$('#links-div').append($('<div class="bar"> | </div>'));
+	$('#links-div').append($('<div class="link" id="3">about</div>'));
+	$('.bar').css({ "display":"inline" });
+	$('.link').css({ "display":"inline" });
+	$('#links-div').css({ "font-size": "200%", "text-align":"center", "width": "100%", "position": "absolute", "top": $('#logo-div').height() - $('#links-div').height() * 2 });
+	$('#left-top').append($('#links-div'));
+	//<img id="logo" src="photoshop/1train-logo-clean.png"><div id="links-div" class="tk-hobo-std"><div class="links"><a>hottest</a></div><div class="links"> | </div><div class="links"><a>newest</a></div><div class="links"> | </div><div class="links"><a>random</a></div></div><div id="carousel"><img src="photoshop/carousel-headphones-black-red.png"><div id="carousel-text">text should change with image</div></div></div>');
+
+	mainContent.append($('<div id="right"></div>'));
+	$('#right').css({ "width": "50%", "height": "100%", "position": "absolute", "top": 0, "right": 0 });
+	$('#right').append($('<div id="grid"></div>'));
+
+	$('#grid').css({ "height": "87.5%", "overflow": "scroll", "margin-top": "5%" });
+	/*
+	$('#logo').css({ "padding-left": "50%", "padding-right": "50%" })
 
 	var carousel = new Array(2);
 
@@ -42,56 +120,7 @@ $(document).ready(function(){
 	img = $("<img src='media/50-cent-too-rich.jpg'>");
 	img.css({ height: "50px", width: "50px" });
 	$("#artwork").append(img);
-});
-
-var leftDivWrapper = $('<div id="left-div-wrapper"><img id="logo" src="photoshop/1train-logo-clean.png"><div id="links-div" class="tk-hobo-std"><div class="links"><a>hottest</a></div><div class="links"> | </div><div class="links"><a>newest</a></div><div class="links"> | </div><div class="links"><a>random</a></div></div><div id="carousel"><img src="photoshop/carousel-headphones-black-red.png"><div id="carousel-text">text should change with image</div></div></div>');
-
-var switch_to_homepage = function (){
-	var mainContent = $('#main-content');
-	mainContent.empty();
-
-	//populate home page
-
-	mainContent.append($('<div id="center"></div>'));
-	mainContent.css({ "height": window_height - media_bar_height });
-
-	$('#center').css({ "position": "relative", "margin": "auto 0", "top": 0, "bottom": 0, "left": 0, "right": 0, "height": "auto", "width": "auto" });
-	$('#center').append($('<div id="logo-div">'));
-	$('#logo-div').append($('<img id="logo" src="photoshop/1train-logo-clean.png">'));
-	$('#logo-div').css({ "position": "relative", "top": ((window_height - media_bar_height) / 2) - ($('#logo').height() / (4/3)),
-	 											"left": window_width / 2 - ($('#logo').width() / 2), "width": "100%", "height": $('#logo').height() });
-	$('#logo').css({"position":"absolute", "top": "0", "bottom": "0", "left": "0", "right": "0", "margin": "auto 0"});
-
-	$('#center').append($('<div id="links-div"></div>'));
-	$('#links-div').append($('<div class="link" id="1">music</div>'));
-	$('#links-div').append($('<div class="bar"> | </div>'));
-	$('#links-div').append($('<div class="link" id="2">sports</div>'));
-	$('#links-div').append($('<div class="bar"> | </div>'));
-	$('#links-div').append($('<div class="link" id="3">about</div>'));
-	$('.bar').css({ "display":"inline" });
-	$('.link').css({ "display":"inline", "top": "500px" });
-	$('#links-div').css({ "font-size": "200%", "text-align":"center", "width": "100%",  "position": "relative", "top": $('#logo').height() / 10 });
-	$('#center').append($('#links-div'));
-
-	$.ajax("controller.php/home",{
-		type: "GET",
-		datatype: "json",
-		success: function(textStatus, jqXHR){
-			$('#links-div > #1').on('click', switch_to_music);
-			$('#links-div > #2').on('click', switch_to_sports);
-			$('#links > #3').on('click', switch_to_about);
-		}
-	});
-};
-
-var switch_to_music = function () {
-	var mainContent = $('#main-content');
-	mainContent.empty();
-	// alert("cool");
-	mainContent.append($('<div id="left"></div><div id="grid"></div>'));
-	$('#grid').css({ "height": window_height - media_bar_height, "width": "333px", "overflow": "scroll" })
-	$('#left').append(leftDivWrapper);
-
+	*/
 	$.ajax("controller.php/posts", {
 		type: "GET",
 		datatype: "json",
@@ -147,7 +176,7 @@ var makePostsGrid = function (grid_div, win_wid, media_bar_height, images) {
 	this.grid_div = grid_div;
 
 	//make size of of grid
-	grid_div.css({ position: "absolute", width: win_wid / 2, top: media_bar_height + 50, left: win_wid / 2 });
+	grid_div.css({ "position": "absolute", "width": "100%" });
 
 	var numOfRows = images.length / 2;
 	//make grid
