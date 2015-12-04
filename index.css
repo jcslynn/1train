@@ -7,7 +7,7 @@ html {
 	font-family: "hobo-std", sans-serif;
 }
 #media-bar {
-	position: absolute;
+	position: relative;
 	top: 0;
 	left: 0;
 	background-color: black;
@@ -16,7 +16,7 @@ html {
 }
 
 #main-content{
-	position: relative;
+	position: absolute;
 	left: 0;
 	top: 62px;
 	width: 100%;
@@ -53,23 +53,15 @@ html {
 
 }
 
-#volume{
+#volume {
 	height: 62px;
-	/*visibility: hidden;*/
 }
 
-#reading-list{
-	visibility: hidden;
+.link {
+	display: inline;
 }
 
-#video-queue{
-	visibility: hidden;
-}
-
-#song-queue{
-	visibility: hidden;
-}
-.link1:hover, .link2:hover, .link3:hover, .home:hover{
+.link:hover {
 	color: #ff0016;
 	cursor: pointer;
 }

@@ -1,5 +1,6 @@
 <?php
-require_once('model.php');
+require_once('1trainSongs.php');
+require_once('1trainArtists.php');
 
 $resource_components = explode('/', $_SERVER['PATH_INFO']);
 
@@ -20,7 +21,7 @@ if(($resource_type != 'posts') and ($resource_type != 'home')) {
 if(count($resource_components) == 2){
 	if($resource_type == 'posts'){
 		$plist = array();
-		foreach (getPostList() as $idx => $post){
+		foreach (Songs::getPostList() as $idx => $post){
 			$plist[] = array('id' => $post['id'], 'artwork_url' => $post['artwork_url']);
 			// print(json_encode($plist));
 		}
@@ -51,9 +52,9 @@ if(count($resource_components) == 3){
 		print("No message with id = " . $resource_id);
 	}
 
-	$postImage = getPostImage($resource_id);
-	$postTitle = getPostTitle($resource_id);
-	$postArtist = getPostArtist($resource_id);
+	$postImage = Songs::getPostImage($resource_id);
+	$postTitle = Songs::getPostTitle($resource_id);
+	$postArtist = Songs::getPostArtist($resource_id);
 
 	$post = array('img' => $postImage, 'title' => $postTitle, 'name' => $postArtist);
 
