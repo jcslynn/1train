@@ -20,8 +20,9 @@ if(($resource_type != 'posts') and ($resource_type != 'home')) {
 if(count($resource_components) == 2){
 	if($resource_type == 'posts'){
 		$plist = array();
-		foreach (getPostList() as $postId){
-			$plist = $postId;
+		foreach (getPostList() as $idx => $post){
+			$plist[] = array('id' => $post['id'], 'artwork_url' => $post['artwork_url']);
+			// print(json_encode($plist));
 		}
 		header('Content-type: application/json');
 		print(json_encode($plist));
