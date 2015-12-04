@@ -1,0 +1,71 @@
+body{
+	margin: auto;
+	padding: 0;
+}
+html {
+	background-color: white;
+	font-family: "hobo-std", sans-serif;
+}
+#media-bar {
+	position: relative;
+	top: 0;
+	left: 0;
+	background-color: black;
+	width: 100%;
+	height: 62px;
+}
+
+#main-content{
+	position: absolute;
+	left: 0;
+	top: 62px;
+	width: 100%;
+}
+
+#media-bar-wrapper div {
+	position: absolute;
+}
+
+#artwork{
+	/*visibility: hidden;*/
+	height: 62px;
+	width: 62px;
+	left: 15px;
+}
+
+#play-pause{
+	/*visibility: hidden;*/
+	/*height: 50px;*/
+	left: 93px;
+}
+
+#pause-button{
+	visibility: hidden;
+}
+#song-info{
+	visibility: hidden;
+}
+
+#seeker{
+	/*visibility: hidden;*/
+	height: 62px;
+	width: 62px;
+
+}
+
+#volume {
+	height: 62px;
+}
+
+.link {
+	display: inline;
+}
+
+.link:hover {
+	color: #ff0016;
+	cursor: pointer;
+}
+
+#logo:hover{
+	cursor: pointer;
+}
