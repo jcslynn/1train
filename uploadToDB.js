@@ -21,7 +21,7 @@ $(document).ready(function() {
          + tracks[i]['user']['username'] + ' with artwork at ' +*/ tracks[i]['artwork_url']);
 
 
-         $.ajax("uploadToDB.php/",
+         $.ajax("uploadToDB.php",
          {
            type: "POST",
            dataType: "json",
