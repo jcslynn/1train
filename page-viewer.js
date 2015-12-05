@@ -1,3 +1,5 @@
+SC.initialize({ client_id: 'b587094d7c883db6a341a2faeb24c587' });
+
 var window_height = $(window).height();
 var window_width = $(window).width();
 var media_bar_height = 62;
@@ -126,11 +128,13 @@ var switch_to_music = function () {
 		datatype: "json",
 		success: function(plist, textStatus, jqXHR){
 			var imgs = new Array(plist.length);
+			var ids = new Array(plist.length);
 			for(var i=0; i<plist.length; i++){
 				var post = plist[i];
 				imgs[i] = post.artwork_url;
+				ids[i] = post.id;
 			}
-			makePostsGrid($("#grid"), window_width, media_bar_height, imgs);
+			makePostsGrid($("#grid"), window_width, media_bar_height, ids, imgs);
 			$("#logo").on('click', switch_to_homepage);
 
 		}
@@ -172,7 +176,7 @@ var switch_to_sports = function() {
 	});
 };
 
-var makePostsGrid = function (grid_div, win_wid, media_bar_height, images) {
+var makePostsGrid = function (grid_div, win_wid, media_bar_height, ids, images) {
 	var numOfRows = images.length / 2;
 	this.grid_div = grid_div;
 	this.tiles = new Array(numOfRows);
@@ -184,17 +188,19 @@ var makePostsGrid = function (grid_div, win_wid, media_bar_height, images) {
 		this.tiles[i] = new Array(2);
 		for (j = 0; j < 2; j++) {
 			//make new space, hand in grid div and image
-			var tile = new Tile(i, j, images[j* numOfRows + i]);
+			var tile = new Tile(i, j, ids[j* numOfRows + i], images[j* numOfRows + i]);
 			this.tiles[i][j] = tile;
 			grid_div.append(tile.getTileDiv());
 		}
 	}
 };
 
-var Tile = function (i, j, image) {
+var Tile = function (i, j, id, image) {
 	this.image = image;
+	// this.sc_id = id;
 	var tile = this;
-
+	this.is_playing = false;
+	this.sound;
 	//create cell
 	this.tile_div = $("<div></div>").css({position: "absolute", width: "250px", height: "200px",
 	 																				top: i * 225, left: j * 275 + 25 });
@@ -209,21 +215,60 @@ var Tile = function (i, j, image) {
     this.tile_div.click(function (e) {
 		e.preventDefault();
 		if ((e.button == 0) && !e.shiftKey && !e.altKey)  {
-		    this.leftClick();
+		    tile.leftClick(id);
 		} else if ((e.button == 0) && e.altKey) {
-		    this.altClick();
+		    tile.altClick();
 		} else if ((e.button == 0) && e.shiftKey) {
-		    this.shiftClick();
+		    tile.shiftClick();
 		}
     });
 };
 
+Tile.prototype.isPlaying = function (){
+	return this.is_playing;
+}
+Tile.prototype.play = function(){
+	this.is_playing = true;
+}
+
+Tile.prototype.pause = function(){
+	this.is_playing = false;
+}
 Tile.prototype.getTileDiv = function () {
 	return this.tile_div;
 };
 
-Tile.prototype.leftClick = function () {
+Tile.prototype.leftClick = function (id) {
 	console.log("left click.");
+	var t = this;
+	console.log("1 " + t.sound);
+	console.log("1 " + t.isPlaying());
+
+	if(t.sound) {
+
+		if(t.isPlaying()){
+				console.log("stop");
+				t.sound.pause();
+				t.pause();
+			} else if(!t.isPlaying()){
+				console.log("play");
+				t.sound.play();
+				t.play(); }
+	} else {
+		// SC.get('/tracks/' + id).then(function(track){$('#player').html(track.title);})
+		SC.stream('/tracks/' + id).then(function(player){ 
+			console.log('/tracks/'+id);
+			// console.log("cool")
+			// console.log(this.isPlaying());
+			player.play();
+			t.sound = player;
+			t.play();	
+			console.log("2 " +t.sound);
+			console.log("2 " +t.isPlaying());
+		});
+
+	}
+
 };
 
 Tile.prototype.shiftClick = function () {
