@@ -18,8 +18,6 @@ $(document).ready(function(){
 	switch_to_homepage();
 });
 
-var leftDivWrapper = $('<div id="left-div-wrapper"><img id="logo" src="photoshop/1train-logo-clean.png"><div id="links-div" class="tk-hobo-std"><div class="links"><a>hottest</a></div><div class="links"> | </div><div class="links"><a>newest</a></div><div class="links"> | </div><div class="links"><a>random</a></div></div><div id="carousel"><img src="photoshop/carousel-headphones-black-red.png"><div id="carousel-text">text should change with image</div></div></div>');
-
 var switch_to_homepage = function (){
 	var mainContent = $('#main-content');
 	mainContent.empty();
@@ -75,6 +73,7 @@ var switch_to_music = function () {
 	$('#logo-div').css({ "position": "relative", "width": "100%", "height": $('#logo').height() });
 	$('#logo').css({ "position": "absolute", "left": ($('#logo-div').width() / 2) - ($('#logo').width() / 2),
  										"top":  ($('#left-top').height() / 2) - ($('#logo').height() / 2)});
+	/*
 	$('#left-top').append($('<div id="links-div"></div>'));
 	$('#links-div').append($('<div class="link" id="1">music</div>'));
 	$('#links-div').append($('<div class="bar"> | </div>'));
@@ -86,6 +85,7 @@ var switch_to_music = function () {
 	$('#links-div').css({ "font-size": "200%", "text-align":"center", "width": "100%", "position": "absolute", "top": $('#logo-div').height() - $('#links-div').height() * 2 });
 	$('#left-top').append($('#links-div'));
 	//<img id="logo" src="photoshop/1train-logo-clean.png"><div id="links-div" class="tk-hobo-std"><div class="links"><a>hottest</a></div><div class="links"> | </div><div class="links"><a>newest</a></div><div class="links"> | </div><div class="links"><a>random</a></div></div><div id="carousel"><img src="photoshop/carousel-headphones-black-red.png"><div id="carousel-text">text should change with image</div></div></div>');
+	*/
 
 	mainContent.append($('<div id="right"></div>'));
 	$('#right').css({ "width": "50%", "height": "100%", "position": "absolute", "top": 0, "right": 0 });
@@ -173,21 +173,63 @@ var switch_to_sports = function() {
 };
 
 var makePostsGrid = function (grid_div, win_wid, media_bar_height, images) {
+	var numOfRows = images.length / 2;
 	this.grid_div = grid_div;
-
+	this.tiles = new Array(numOfRows);
 	//make size of of grid
 	grid_div.css({ "position": "absolute", "width": "100%" });
 
-	var numOfRows = images.length / 2;
 	//make grid
 	for (i = 0; i < numOfRows; i++) {
+		this.tiles[i] = new Array(2);
 		for (j = 0; j < 2; j++) {
-			post = $("<div></div>");
-			post.css({position: "absolute", width: "250px", height: "200px", top: i * 225, left: j * 275 + 25 });
-			img = $("<img src=\"" + images[j* numOfRows + i] + "\">");
-			img.css({ height: "200px", width: "250px" });
-			post.append(img);
-			grid_div.append(post);
+			//make new space, hand in grid div and image
+			var tile = new Tile(i, j, images[j* numOfRows + i]);
+			this.tiles[i][j] = tile;
+			grid_div.append(tile.getTileDiv());
 		}
 	}
+};
+
+var Tile = function (i, j, image) {
+	this.image = image;
+	var tile = this;
+
+	//create cell
+	this.tile_div = $("<div></div>").css({position: "absolute", width: "250px", height: "200px",
+	 																				top: i * 225, left: j * 275 + 25 });
+	img = $("<img src=\"" + image + "\">");
+	img.css({ height: "200px", width: "250px" });
+	this.tile_div.append(img);
+
+	this.tile_div.on('mousedown', function (e) {
+		e.preventDefault();
+	});
+
+    this.tile_div.click(function (e) {
+		e.preventDefault();
+		if ((e.button == 0) && !e.shiftKey && !e.altKey)  {
+		    this.leftClick();
+		} else if ((e.button == 0) && e.altKey) {
+		    this.altClick();
+		} else if ((e.button == 0) && e.shiftKey) {
+		    this.shiftClick();
+		}
+    });
+};
+
+Tile.prototype.getTileDiv = function () {
+	return this.tile_div;
+};
+
+Tile.prototype.leftClick = function () {
+	console.log("left click.");
+};
+
+Tile.prototype.shiftClick = function () {
+	console.log("shift click.");
+};
+
+Tile.prototype.altClick = function () {
+	console.log("alt click.");
 };
