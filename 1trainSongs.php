@@ -5,6 +5,7 @@ class Songs{
 	private $title;
 	private $artistid;
 	private $art;
+	private $num;
 
 	public static function create($songid, $title, $artistid, $art){
 		$servername = "classroom.cs.unc.edu";
@@ -17,11 +18,18 @@ class Songs{
 	    $addSong = "INSERT INTO 1trainSongs (id, title, artist, artwork_url)
 	                VALUES ('$songid', '$title', '$artistid', '$art')
 	                ON DUPLICATE KEY UPDATE title=title";
-		$result = $conn->query($addSong);
-		if($result){
-			return new Songs($songid, $title, $artistid, $art);
+
+		if($conn->query($addSong) === TRUE){
+			$getNum = "SELECT num FROM 1trainSongs WHERE id='$songid";
+			$rows = $conn->query($getNum);
+			$row = $rows->fetch_assoc();
+			$num = $row['num'];
+			return new Songs($songid, $title, $artistid, $art, $num);
+			// return "success";
 		}
-		return null;
+		else{
+			return "fail" . $conn->error;
+		}
 	}
 
 	public static function getPostList(){
@@ -34,7 +42,7 @@ class Songs{
 		$list = array();
 		$post = array();
 
-		$getAllIds = "SELECT id, artwork_url FROM 1trainSongs LIMIT 0,10";
+		$getAllIds = "SELECT id, artwork_url FROM 1trainSongs GROUP BY num LIMIT 0,10";
 		$rows = $conn->query($getAllIds);
 
 		if($rows->num_rows > 0 ){
@@ -53,14 +61,15 @@ class Songs{
 		$dbname = "tklosedb";
 		$conn = new mysqli($servername, $username, $password, $dbname);
 
-		$getPost = "SELECT * FROM 1trainSongs WHERE id='$id'";
+		$getPost = "SELECT * FROM 1trainSongs WHERE num='$id'";
 		$rows = $conn->query($getPost);
 
 		if($rows->num_rows > 0 ){
 			$row = $rows->fetch_assoc();
-			return new Songs(intval($row['id']), $row['title'], intval($row['artist']), $row['artwork_url']);
+			return new Songs(intval($row['id']), $row['title'], intval($row['artist']), $row['artwork_url'], $row['num']);
+			// return "cool";
 		}
-		return null;
+		return "false";
 	}
 
 	public static function ifExists($id){
@@ -70,7 +79,7 @@ class Songs{
 		$dbname = "tklosedb";
 		$conn = new mysqli($servername, $username, $password, $dbname);
 
-		$getPost = "SELECT * FROM Songs WHERE id='$id'";
+		$getPost = "SELECT * FROM 1trainSongs WHERE num='$id'";
 		$post = $conn->query($getPost);
 		if($post->num_rows > 0 ){
 			return true;
@@ -80,11 +89,12 @@ class Songs{
 		}
 	}
 
-	private function __construct($songid, $title, $artistid, $art){
+	private function __construct($songid, $title, $artistid, $art, $num){
 		$this->songid = $songid;
 		$this->title = $title;
 		$this->artistid = $artistid;
 		$this->art = $art;
+		$this->num = $num;
 	}
 
 	public function getSongID(){
@@ -100,8 +110,13 @@ class Songs{
 		return $this->art;
 	}
 
+	public function getNum(){
+		return $this->num;
+	}
+
 	public function getJSON(){
-		$json_obj = array("id" => $this->songid,
+		$json_obj = array("num" => $this->num,
+						  "id" => $this->songid,
 						  "title" => $this->title,
 						  "artistid" => $this->artistid,
 						  "art" => $this->art);

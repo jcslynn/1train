@@ -17,15 +17,20 @@ $(document).ready(function() {
       console.log(tracks);
 
       for (var i = 0; i < tracks.length; i++) {
-        console.log(tracks[i]['id'] + ': ' + tracks[i]['title'] + ' by ' + tracks[i]['user_id'] + ':'
-         + tracks[i]['user']['username'] + ' with artwork at ' + tracks[i]['artwork_url']);
+        console.log(/*tracks[i]['id'] + ': ' + tracks[i]['title'] + ' by ' + tracks[i]['user_id'] + ':'
+         + tracks[i]['user']['username'] + ' with artwork at ' +*/ tracks[i]['artwork_url']);
+
 
          $.ajax("uploadToDB.php",
          {
            type: "POST",
            dataType: "json",
            data: tracks[i],
-           success: function() { console.log("successfully added to DB"); }
+           success: function(art, textStatus, jqXHR) { console.log(art); },
+           error: function(jqXHR, textStatus, error){
+            console.log(jqXHR.responseText);
+           }
+
          });
 
       }
