@@ -47,19 +47,15 @@ if(count($resource_components) == 3){
 
 	$resource_id = intval($resource_id_components[0]);
 	
-	if(!ifExists($resource_id)){
+	if(!Songs::ifExists($resource_id)){
 		header("HTTP/1.1 404 Not Found");
 		print("No message with id = " . $resource_id);
 	}
 
-	$postImage = Songs::getPostImage($resource_id);
-	$postTitle = Songs::getPostTitle($resource_id);
-	$postArtist = Songs::getPostArtist($resource_id);
-
-	$post = array('img' => $postImage, 'title' => $postTitle, 'name' => $postArtist);
-
+	$post = Songs::getPostByID($resource_id);
+	$post = $post->getJSON();
 	header('Content-type: application/json');
-	print(json_encode($post));
+	print($post);
 	exit();
 }
 header("HTTP/1.1 400 Bad Request");
