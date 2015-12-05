@@ -7,12 +7,13 @@ $(document).ready(function() {
   var artwork = [];
   var myUserID;
 
-
-  SC.get('/resolve?url=http://soundcloud.com/soundsbytk&client_id=b587094d7c883db6a341a2faeb24c587').then( function(result) {
+  var profile = prompt("Enter SoundCloud Profile", "");
+  SC.get('/resolve?url=http://soundcloud.com/'+ profile +'&client_id=b587094d7c883db6a341a2faeb24c587').then( function(result) {
     console.log(result['id'] + ': ' + result['username']);
     myUserID = result['id'];
-
+    // alert(result['id']);
     //get tracks from my soundcloud favorites
+
     SC.get('/users/' + myUserID + '/favorites').then( function(tracks) {
       // console.log(tracks);
 
