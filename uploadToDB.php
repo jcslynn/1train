@@ -10,12 +10,20 @@
   $art = $_REQUEST['artwork_url'];
   $avatar = $_REQUEST['user']['avatar_url'];
 
-  if($art = ""){
+  header('Content-type: application/json');
+  print($art);
+
+  Artists::create($artistid, $artist);
+  
+  if($art == ""){
+    // echo($avatar);
     Songs::create($songid, $title, $artistid, $avatar);
+    
   }
   else{
+    // echo($art);
     Songs::create($songid, $title, $artistid, $art);
   }
-  Artists::create($artistid, $artist);
+
 
 ?>

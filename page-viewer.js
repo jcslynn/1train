@@ -54,7 +54,7 @@ var switch_to_homepage = function (){
 		success: function(textStatus, jqXHR){
 			$('#links-div > #1').on('click', switch_to_music);
 			$('#links-div > #2').on('click', switch_to_sports);
-			$('#links > #3').on('click', switch_to_about);
+			$('#links-div > #3').on('click', switch_to_about);
 		}
 	});
 };
