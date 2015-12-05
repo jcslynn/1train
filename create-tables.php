@@ -33,9 +33,10 @@
 	}
 
   $createSongs = "CREATE TABLE 1trainSongs (
-						id INT PRIMARY KEY,
+  						num INT PRIMARY KEY AUTO_INCREMENT,
+						id INT,
 						title CHAR(50),
-            artist INT,
+           				artist INT,
 						artwork_url CHAR(255),
             FOREIGN KEY (artist) REFERENCES 1trainArtists(id)
 						)";
