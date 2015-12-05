@@ -17,11 +17,14 @@ class Songs{
 	    $addSong = "INSERT INTO 1trainSongs (id, title, artist, artwork_url)
 	                VALUES ('$songid', '$title', '$artistid', '$art')
 	                ON DUPLICATE KEY UPDATE title=title";
-		$result = $conn->query($addSong);
-		if($result){
-			return new Songs($songid, $title, $artistid, $art);
+
+		if($conn->query($addSong) === TRUE){
+			// return new Songs($songid, $title, $artistid, $art);
+			return "success";
 		}
-		return null;
+		else{
+			return "fail" . $conn->error;
+		}
 	}
 
 	public static function getPostList(){

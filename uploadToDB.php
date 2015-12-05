@@ -14,7 +14,6 @@
   print($art);
 
   Artists::create($artistid, $artist);
-  
   if($art == ""){
     // echo($avatar);
     Songs::create($songid, $title, $artistid, $avatar);
@@ -24,6 +23,7 @@
     // echo($art);
     Songs::create($songid, $title, $artistid, $art);
   }
+  exit();
 
 
 ?>
