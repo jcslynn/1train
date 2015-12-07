@@ -34,13 +34,11 @@ html {
 }
 
 #play-pause{
-	/*visibility: hidden;*/
-	/*height: 50px;*/
 	left: 93px;
 }
 
 #pause-button{
-	visibility: hidden;
+
 }
 #song-info{
 	visibility: hidden;
