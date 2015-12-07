@@ -16,10 +16,9 @@ $(document).ready(function() {
 
     SC.get('/users/' + myUserID + '/favorites').then( function(tracks) {
       // console.log(tracks);
-
       for (var i = 0; i < tracks.length; i++) {
-        console.log(tracks[i]['id'] + ': ' + tracks[i]['title'] + ' by ' + tracks[i]['user_id'] + ':'
-         + tracks[i]['user']['username'] + ' with artwork at ' + tracks[i]['streamable']);
+          console.log(tracks[i]['id'] + ': ' + tracks[i]['title'] + ' by ' + tracks[i]['user_id'] + ':'
+          + tracks[i]['user']['username'] + ' with artwork at ' + tracks[i]['artwork_url']  + ' and isStreamable() = ' + tracks[i]['streamable']);
 
           if (tracks[i]['streamable']) {
              $.ajax("uploadToDB.php",
@@ -29,7 +28,7 @@ $(document).ready(function() {
                data: tracks[i],
                success: function(art, textStatus, jqXHR) { console.log(art); },
                error: function(jqXHR, textStatus, error){
-                console.log(jqXHR.responseText);
+               console.log(jqXHR.responseText);
                }
 
              });
@@ -40,14 +39,4 @@ $(document).ready(function() {
       }
     });
   });
-
-
-
-
-    
-    // //play specified song
-    // SC.stream('/tracks/' + ids[1]).then(function(player){
-    //                           player.play();
-    // });
-    
 });
