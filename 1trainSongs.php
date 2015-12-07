@@ -6,8 +6,9 @@ class Songs{
 	private $artistid;
 	private $art;
 	private $num;
+	private $user_id;
 
-	public static function create($songid, $title, $artistid, $art){
+	public static function create($songid, $title, $artistid, $art, $user_id){
 		$servername = "classroom.cs.unc.edu";
 		$username = "tklose";
 		$password = "TARheels21!!";
@@ -15,17 +16,19 @@ class Songs{
 		$conn = new mysqli($servername, $username, $password, $dbname);
 
 
-	    $addSong = "INSERT INTO 1trainSongs (id, title, artist, artwork_url)
-	                VALUES ('$songid', '$title', '$artistid', '$art')
-	                ON DUPLICATE KEY UPDATE title=title";
+    $addSong = "INSERT INTO 1trainSongs (id, title, artist, artwork_url, user_id)
+                VALUES ('$songid', '$title', '$artistid', '$art', '$user_id')
+                ON DUPLICATE KEY UPDATE title=title";
 
 		if($conn->query($addSong) === TRUE){
 			$getNum = "SELECT num FROM 1trainSongs WHERE id='$songid";
 			$rows = $conn->query($getNum);
-			$row = $rows->fetch_assoc();
-			$num = $row['num'];
-			return new Songs($songid, $title, $artistid, $art, $num);
-			// return "success";
+			if ($rows){
+				$row = $rows->fetch_assoc();
+				$num = $row['num'];
+				return new Songs($songid, $title, $artistid, $art, $num, $user_id);
+				// return "success";
+			}
 		}
 		else{
 			return "fail" . $conn->error;
@@ -42,7 +45,29 @@ class Songs{
 		$list = array();
 		$post = array();
 
-		$getAllIds = "SELECT id, artwork_url FROM 1trainSongs GROUP BY num LIMIT 0,10";
+		$getAllIds = "SELECT id, artwork_url FROM 1trainSongs GROUP BY num LIMIT 0,40";
+		$rows = $conn->query($getAllIds);
+
+		if($rows->num_rows > 0 ){
+			while($row = $rows->fetch_assoc()){
+				$post = array('id' => $row['id'], 'artwork_url' => $row['artwork_url']);
+				$list[] = $post;
+			}
+		}
+		return $list;
+	}
+
+	public static function getPostListByUser($user_id){
+		$servername = "classroom.cs.unc.edu";
+		$username = "tklose";
+		$password = "TARheels21!!";
+		$dbname = "tklosedb";
+		$conn = new mysqli($servername, $username, $password, $dbname);
+
+		$list = array();
+		$post = array();
+
+		$getAllIds = "SELECT id, artwork_url FROM 1trainSongs WHERE user_id='$user_id' GROUP BY num LIMIT 0,40";
 		$rows = $conn->query($getAllIds);
 
 		if($rows->num_rows > 0 ){
@@ -61,15 +86,18 @@ class Songs{
 		$dbname = "tklosedb";
 		$conn = new mysqli($servername, $username, $password, $dbname);
 
-		$getPost = "SELECT * FROM 1trainSongs WHERE num='$id'";
-		$rows = $conn->query($getPost);
+		$getPost = "SELECT * FROM 1trainSongs WHERE id='$id'";
+		$result = $conn->query($getPost);
+		if(is_null($result)){
+			print "error finding song: " . $conn->error;
+		}
 
-		if($rows->num_rows > 0 ){
+		if($result->num_rows > 0 ){
 			$row = $rows->fetch_assoc();
-			return new Songs(intval($row['id']), $row['title'], intval($row['artist']), $row['artwork_url'], $row['num']);
+			return new Songs(intval($row['id']), $row['title'], intval($row['artist']), $row['artwork_url'], $row['num'], $row['user_id']);
 			// return "cool";
 		}
-		return "false";
+		return "HEY";
 	}
 
 	public static function ifExists($id){
@@ -89,12 +117,13 @@ class Songs{
 		}
 	}
 
-	private function __construct($songid, $title, $artistid, $art, $num){
+	private function __construct($songid, $title, $artistid, $art, $num, $user_id){
 		$this->songid = $songid;
 		$this->title = $title;
 		$this->artistid = $artistid;
 		$this->art = $art;
 		$this->num = $num;
+		$this->user_id = $user_id;
 	}
 
 	public function getSongID(){
@@ -114,13 +143,18 @@ class Songs{
 		return $this->num;
 	}
 
+	public function getUser(){
+		return $this->user_id;
+	}
+
 	public function getJSON(){
 		$json_obj = array("num" => $this->num,
 						  "id" => $this->songid,
 						  "title" => $this->title,
 						  "artistid" => $this->artistid,
-						  "art" => $this->art);
-		return json_encode($json_obj);	
+						  "art" => $this->art,
+							"user_id" => $this->user_id);
+		return json_encode($json_obj);
 	}
 }
 
