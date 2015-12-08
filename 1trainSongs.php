@@ -4,6 +4,7 @@ class Songs{
 	private $songid;
 	private $title;
 	private $artistid;
+	private $artistname;
 	private $art;
 	private $num;
 	private $user_id;
@@ -16,17 +17,27 @@ class Songs{
 		$conn = new mysqli($servername, $username, $password, $dbname);
 
 
-    $addSong = "INSERT INTO 1trainSongs (id, title, artist, artwork_url, user_id)
-                VALUES ('$songid', '$title', '$artistid', '$art', '$user_id')
-                ON DUPLICATE KEY UPDATE title=title";
+    	$addSong = "INSERT INTO 1trainSongs (id, title, artist, artwork_url, user_id)
+	                VALUES ('$songid', '$title', '$artistid', '$art', '$user_id')
+	                ON DUPLICATE KEY UPDATE title=title";
 
 		if($conn->query($addSong) === TRUE){
 			$getNum = "SELECT num FROM 1trainSongs WHERE id='$songid";
 			$rows = $conn->query($getNum);
 			if ($rows){
+				$artistname;
+				$artistid = $row['artistid'];
+				$getArtistQuery = "SELECT name FROM 1trainArtists WHERE id='$artistid'";
+				$r = $conn->query($getArtistQuery);
+				
+				if($r->num_rows > 0) {
+					$artistrow = $r->fetch_assoc();
+					$artistname = $artistrow['name'];
+				}
+				
 				$row = $rows->fetch_assoc();
 				$num = $row['num'];
-				return new Songs($songid, $title, $artistid, $art, $num, $user_id);
+				return new Songs($songid, $title, $artistid, $artistname, $art, $num, $user_id);
 				// return "success";
 			}
 		}
@@ -49,10 +60,18 @@ class Songs{
 		$rows = $conn->query($getAllIds);
 
 		if($rows->num_rows > 0 ){
-			while($row = $rows->fetch_assoc()){
-				$post = array('id' => $row['id'], 'artwork_url' => $row['artwork_url']);
-				$list[] = $post;
+			$artistname;
+			$artistid = $row['artistid'];
+			$getArtistQuery = "SELECT name FROM 1trainArtists WHERE id='$artistid'";
+			$r = $conn->query($getArtistQuery);
+			
+			if($r->num_rows > 0) {
+				$artistrow = $r->fetch_assoc();
+				$artistname = $artistrow['name'];
 			}
+			
+			$post = array('id' => $row['id'], 'title' => $row['title'], 'artist' => $artistname, 'artwork_url' => $row['artwork_url']);
+			$list[] = $post;
 		}
 		return $list;
 	}
@@ -67,12 +86,22 @@ class Songs{
 		$list = array();
 		$post = array();
 
-		$getAllIds = "SELECT id, artwork_url FROM 1trainSongs WHERE user_id='$user_id' GROUP BY num LIMIT 0,40";
+		$getAllIds = "SELECT id, title, artist, artwork_url FROM 1trainSongs WHERE user_id='$user_id' GROUP BY num LIMIT 0,40";
 		$rows = $conn->query($getAllIds);
 
 		if($rows->num_rows > 0 ){
 			while($row = $rows->fetch_assoc()){
-				$post = array('id' => $row['id'], 'artwork_url' => $row['artwork_url']);
+				$artistname;
+				$artistid = $row['artist'];
+				$getArtistQuery = "SELECT name FROM 1trainArtists WHERE id='$artistid'";
+				$r = $conn->query($getArtistQuery);
+				
+				if($r->num_rows > 0) {
+					$artistrow = $r->fetch_assoc();
+					$artistname = $artistrow['name'];
+				}
+				
+				$post = array('id' => $row['id'], 'title' => $row['title'], 'artist' => $artistname, 'artwork_url' => $row['artwork_url']);
 				$list[] = $post;
 			}
 		}
@@ -93,8 +122,18 @@ class Songs{
 		}
 
 		if($result->num_rows > 0 ){
-			$row = $rows->fetch_assoc();
-			return new Songs(intval($row['id']), $row['title'], intval($row['artist']), $row['artwork_url'], $row['num'], $row['user_id']);
+			$row = $result->fetch_assoc();
+			$artistname;
+			$artistid = $row['artistid'];
+			$getArtistQuery = "SELECT name FROM 1trainArtists WHERE id='$artistid'";
+			$r = $conn->query($getArtistQuery);
+			
+			if($r->num_rows > 0) {
+				$artistrow = $r->fetch_assoc();
+				$artistname = $artistrow['name'];
+			}
+			
+			return new Songs(intval($row['id']), $row['title'], intval($row['artist']), $artistname, $row['artwork_url'], $row['num'], $row['user_id']);
 			// return "cool";
 		}
 		return "HEY";
@@ -117,10 +156,11 @@ class Songs{
 		}
 	}
 
-	private function __construct($songid, $title, $artistid, $art, $num, $user_id){
+	private function __construct($songid, $title, $artistid, $artistname, $art, $num, $user_id){
 		$this->songid = $songid;
 		$this->title = $title;
 		$this->artistid = $artistid;
+		$this->artistname = $artistname;
 		$this->art = $art;
 		$this->num = $num;
 		$this->user_id = $user_id;
@@ -134,6 +174,9 @@ class Songs{
 	}
 	public function getArtistID(){
 		return $this->artistid;
+	}
+	public function getArtistName(){
+		return $this->artistname;
 	}
 	public function getArt(){
 		return $this->art;

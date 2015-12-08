@@ -6,22 +6,25 @@ var window_height = $(window).height();
 var window_width = $(window).width();
 var media_bar_height = 62;
 var currently_playing;
+var myUserID;
 
 $(document).ready(function(){
 	//layout for media bar
 	$("#media-bar").css({ "height": media_bar_height });
 	$("#media-bar-wrapper > div > img").attr("height", media_bar_height);
-	$("#artwork").css({ "height": media_bar_height, "width": media_bar_height, "left": media_bar_height / 4 });
+	$("#artwork").css({ "height": media_bar_height, "width": media_bar_height, "left": media_bar_height / 4, "top": 5 });
 	$("#pause-button").hide();
 	$("#play-pause").css({ "left": media_bar_height * 1.5 });
 	$("#song-queue").css({ "right": "0" });
 	$("#video-queue").css({ "right": $("#song-queue").width() });
 	$("#reading-list").css({ "right": ($("#song-queue").width() * 2) - 20 });
 	$("#volume").css({ "right": $("#song-queue").width() * 3 - 10});
+	$("#muted").hide();
 
 	$('#play-button').on('mousedown', function (e) {
 		e.preventDefault();
 	});
+	
 
   $('#play-button').click(function (e) {
 		e.preventDefault();
@@ -31,22 +34,53 @@ $(document).ready(function(){
 					currently_playing.play();
 				}
 		}
-  });
+  	});
 
 	$('#pause-button').on('mousedown', function (e) {
 		e.preventDefault();
 	});
 
-  $('#pause-button').click(function (e) {
+	$('#pause-button').click(function (e) {
 		e.preventDefault();
 		if ((e.button == 0) && !e.shiftKey && !e.altKey)  {
-		    console.log('pause-button pressed');
-				if(currently_playing) {
-					currently_playing.pause();
-				}
-				//console.log('x: ' + tile.x + ' y: ' + tile.y)
+			console.log('pause-button pressed');
+			if(currently_playing) {
+				currently_playing.pause();
+			}
+		//console.log('x: ' + tile.x + ' y: ' + tile.y)
 		}
-  });
+	});
+	
+	$('#loud').on('mousedown', function (e) {
+		e.preventDefault();
+	});
+	
+	$('#loud').click(function (e) {
+		e.preventDefault();
+		if ((e.button == 0) && !e.shiftKey && !e.altKey)  {
+			console.log("loud clicked");
+		    if(currently_playing) {
+		    	currently_playing.mute();
+		    }
+		}
+  	});
+  	
+	$('#muted').on('mousedown', function (e) {
+		e.preventDefault();
+	});
+
+
+	$('#muted').click(function (e) {
+		e.preventDefault();
+		if ((e.button == 0) && !e.shiftKey && !e.altKey)  {
+			console.log("muted clicked");
+		    if(currently_playing) {
+		    	currently_playing.loud();
+		    }
+		}
+  	});
+  	
+	//finished setting up media
 
 	get_user_info();
 });
@@ -57,12 +91,11 @@ var get_user_info = function (){
   var titles = [];
   var artwork = [];
 	var profile;
-	var myUserID;
 
 	var mainContent = $('#main-content');
 	mainContent.empty();
 
-	//populate home page
+	//populate splash page
 
 	mainContent.append($('<div id="center"></div>'));
 	mainContent.css({ "height": window_height - media_bar_height });
@@ -70,9 +103,10 @@ var get_user_info = function (){
 	$('#center').css({ "position": "relative", "margin": "auto 0", "top": 0, "bottom": 0, "left": 0, "right": 0, "height": "auto", "width": "auto" });
 	$('#center').append($('<div id="logo-div"></div>'));
 	$('#logo-div').append($('<img id="logo" src="photoshop/1train-logo-clean.png">'));
-	$('#logo-div').css({ "position": "relative", "top": ((window_height - media_bar_height) / 2) - ($('#logo').height() / (4/3)),
+	$('#logo-div').css({ "position": "absolute", "top": ((window_height - media_bar_height) / 2) - ($('#logo').height() / (4/3)),
 												"width": "100%", "height": $('#logo').height() });
 	$('#logo').css({"position":"absolute", "left": window_width / 2 - $('#logo').width() / 2 });
+	//$('#logo').css({"position":"absolute", "top": -250, "left": window_width / 2 - $('#logo').width() / 2 });
 
 	$('#center').append($('<div id="user-info-div"></div>'));
 	$('#user-info-div').append($('<div class="text">enter soundcloud extension below<br></div>'));
@@ -160,7 +194,9 @@ var switch_to_homepage = function (){
 			$('#links-div > #2').on('click', switch_to_sports);
 			$('#links-div > #3').on('click', switch_to_about);
 		},
-		error: function(jqXHR, textStatus, error) { console.log("error getting home"); }
+		error: function(jqXHR, textStatus, error){
+			console.log("this still isnt working");
+		}
 	});
 };
 
@@ -184,71 +220,33 @@ var switch_to_music = function () {
 	$('#logo-div').css({ "position": "relative", "width": "100%", "height": $('#logo').height() });
 	$('#logo').css({ "position": "absolute", "left": ($('#logo-div').width() / 2) - ($('#logo').width() / 2),
  										"top":  ($('#left-top').height() / 2) - ($('#logo').height() / 2)});
-	/*
-	$('#left-top').append($('<div id="links-div"></div>'));
-	$('#links-div').append($('<div class="link" id="1">music</div>'));
-	$('#links-div').append($('<div class="bar"> | </div>'));
-	$('#links-div').append($('<div class="link" id="2">sports</div>'));
-	$('#links-div').append($('<div class="bar"> | </div>'));
-	$('#links-div').append($('<div class="link" id="3">about</div>'));
-	$('.bar').css({ "display":"inline" });
-	$('.link').css({ "display":"inline" });
-	$('#links-div').css({ "font-size": "200%", "text-align":"center", "width": "100%", "position": "absolute", "top": $('#logo-div').height() - $('#links-div').height() * 2 });
-	$('#left-top').append($('#links-div'));
-	//<img id="logo" src="photoshop/1train-logo-clean.png"><div id="links-div" class="tk-hobo-std"><div class="links"><a>hottest</a></div><div class="links"> | </div><div class="links"><a>newest</a></div><div class="links"> | </div><div class="links"><a>random</a></div></div><div id="carousel"><img src="photoshop/carousel-headphones-black-red.png"><div id="carousel-text">text should change with image</div></div></div>');
-	*/
+ 										
+ 	$('#left').append($('<div id="left-bottom"></div>'));
+	$('#left-bottom').css({ "position": "relative", "margin": "auto 0", "top": 0, "bottom": 0, "left": 0, "right": 0, "height": "50%", "width": "auto", "font-size": "175%" });
+	$('#left-bottom').append($('<div id="info-div"></div>'));
+	$('#info-div').append($('<div id="artist"><div id="artist-label">artist: </div><div id="artist-name"> nothing is playing </div></div>'));
+	$('#info-div').append($('<div id="song"><div id="song-label">title: </div><div id="song-name"> nothing is playing </div></div>'));
+	$('#info-div').css({ "position": "relative", "width": "100%", "height": $('#logo').height() });
+	$('#artist-label').css({ "position": "absolute", "left": 0, "width": "50%", "text-align": "center" });
+	$('#artist-name').css({ "position": "absolute", "right": 0, "width": "50%", "text-align": "left" });
+	$('#song-label').css({ "position": "absolute", "top": $('#artist-label').height(), "left": 0, "width": "50%", "text-align": "center" });
+	$('#song-name').css({ "position": "absolute", "top": $('#artist-label').height(), "right": 0, "width": "50%", "text-align": "left" });
 
 	mainContent.append($('<div id="right"></div>'));
 	$('#right').css({ "width": "50%", "height": "100%", "position": "absolute", "top": 0, "right": 0 });
 	$('#right').append($('<div id="grid"></div>'));
 
 	$('#grid').css({ "height": "87.5%", "overflow": "scroll", "margin-top": "5%" });
-	/*
-	$('#logo').css({ "padding-left": "50%", "padding-right": "50%" })
-
-	var carousel = new Array(2);
-
-	carousel[0] = "photoshop/carousel-headphones-black-red.png";
-	carousel[1] = "media/50-cent-too-rich.jpg";
-
-	caro_text = new Array(2);
-	caro_text[0] = "music";
-	caro_text[1] = "song of the week";
-	curr_caro = 0;
-
-
-	var slideshow = window.setInterval(function() {
-	if(curr_caro == 0) {
-		curr_caro = 1;
-		$("#carousel > img").attr("src", carousel[curr_caro]);
-		$("#carousel > div").text(caro_text[curr_caro]);
-	} else {
-		curr_caro = 0;
-		$("#carousel > img").attr("src", carousel[curr_caro]);
-		$("#carousel > div").text(caro_text[curr_caro]);
-	}}, 5000);
-
-	img = $("<img src='media/50-cent-too-rich.jpg'>");
-	img.css({ height: "50px", width: "50px" });
-	$("#artwork").append(img);
-	*/
+	
 	$.ajax("controller.php/posts/" + user, {
 		type: "GET",
 		datatype: "json",
 		success: function(plist, textStatus, jqXHR){
-			var imgs = new Array(plist.length);
-			var ids = new Array(plist.length);
-			for(var i=0; i<plist.length; i++){
-				var post = plist[i];
-				imgs[i] = post.artwork_url;
-				ids[i] = post.id;
-			}
-
-			makePostsGrid($("#grid"), window_width, media_bar_height, ids, imgs);
+			makePostsGrid($("#grid"), window_width, media_bar_height, plist);
 			$("#logo").on('click', switch_to_homepage);
 		},
 		error: function(jqXHR, textStatus, error){
-		console.log(/*jqXHR.responseText*/ "error getting image");
+			console.log(jqXHR.responseText);
 		}
 	});
 
@@ -268,6 +266,9 @@ var switch_to_about = function(){
 			mainContent.append(homeButton);
 			homeButton.css({"position":"absolute","font-size": "200%", "text-align":"center"});
 			homeButton.on('click', switch_to_homepage);
+		},
+		error: function(jqXHR, textStatus, error){
+			console.log(jqXHR.responseText);
 		}
 	});
 };
@@ -284,12 +285,16 @@ var switch_to_sports = function() {
 			mainContent.append(homeButton);
 			homeButton.css({"position":"absolute","font-size": "200%", "text-align":"center"});
 			homeButton.on('click', switch_to_homepage);
+		},
+		error: function(jqXHR, textStatus, error){
+			console.log(jqXHR.responseText);
 		}
 	});
 };
 
-var makePostsGrid = function (grid_div, win_wid, media_bar_height, ids, images) {
-	var numOfRows = images.length / 2;
+var makePostsGrid = function (grid_div, win_wid, media_bar_height, songs) {
+	console.log(songs.length);
+	var numOfRows = songs.length / 2;
 	this.grid_div = grid_div;
 	this.tiles = new Array(numOfRows);
 	//make size of of grid
@@ -298,21 +303,24 @@ var makePostsGrid = function (grid_div, win_wid, media_bar_height, ids, images) 
 	//make grid
 	console.log(numOfRows);
 	for (i = 0; i < numOfRows; i++) {
-
 		this.tiles[i] = new Array(2);
 		for (j = 0; j < 2; j++) {
-			//make new space, hand in grid div and image
-			var tile = new Tile(i, j, ids[i * 2 + j], images[i * 2 + j]);
+			//make new space, hand in grid div and image -- changed it to handing in the song object
+			var tile = new Tile(i, j, songs[i * 2 + j]);
 			this.tiles[i][j] = tile;
 			grid_div.append(tile.getTileDiv());
-			console.log('iterating');
 		}
 	}
 };
 
-var Tile = function (i, j, id, image) {
-	this.image = image;
-	this.id = id;
+var Tile = function (i, j, song) {
+	//grab properties from song object passed it
+	console.log("song passed in: ");
+	console.log(song);
+	this.id = song.id;
+	this.title = song.title;
+	this.artist = song.artist;
+	this.image = song.artwork_url;
 	this.x = j;
 	this.y = i;
 	//console.log('num:' + (i*2 +j) + 'x, y: ' + i + ', ' + j);
@@ -323,7 +331,7 @@ var Tile = function (i, j, id, image) {
 	//create cell
 	this.tile_div = $("<div></div>").css({position: "absolute", width: "250px", height: "200px",
 	 																				top: i * 225, left: j * 275 + 25 });
-	img = $("<img src=\"" + image + "\">");
+	img = $("<img src=\"" + tile.image + "\">");
 	img.css({ height: "200px", width: "250px" });
 	this.tile_div.append(img);
 
@@ -334,7 +342,8 @@ var Tile = function (i, j, id, image) {
   this.tile_div.click(function (e) {
 		e.preventDefault();
 		if ((e.button == 0) && !e.shiftKey && !e.altKey)  {
-		    tile.leftClick(id);
+		    tile.leftClick(tile.id);
+		    console.log("artist: " + tile.artist);
 				// tile.fetchInfo();
 				//console.log('x: ' + tile.x + ' y: ' + tile.y)
 		} else if ((e.button == 0) && e.altKey) {
@@ -364,29 +373,38 @@ Tile.prototype.pause = function(){
 	this.sound.pause();
 	console.log("play-pause: pause");
 }
+
+Tile.prototype.loud = function(){
+	this.sound.setVolume(1);
+	$('#muted').hide();
+	$('#loud').show();
+	console.log("louded");
+}
+
+Tile.prototype.mute = function(){
+	this.sound.setVolume(0);
+	$('#muted').show();
+	$('#loud').hide();
+	console.log("muted");
+}
+
 Tile.prototype.getTileDiv = function () {
 	return this.tile_div;
 };
 
-// Tile.prototype.getSongID = function() {
-// 	return this.id;
-// };
-//
-// Tile.prototype.fetchInfo = function() {
-// 	$songID = this.getSongID()
-// 	$.ajax("controller.php/songinfo/" + $songID, {
-// 		type: "GET",
-// 		datatype: "json",
-// 		success: function(song, textStatus, jqXHR){
-//
-// 			console.log("successfully got fetched song info: " + song);
-// 			//change left bottom div
-// 		},
-// 		error: function(jqXHR, textStatus, error){
-// 		console.log(textStatus);
-// 		}
-// 	});
-// };
+Tile.prototype.getSongID = function() {
+	return this.id;
+};
+
+Tile.prototype.displayInfo = function() {
+	$("#artist-name").empty();
+	$("#song-name").empty();
+	$("#artist-name").append(this.artist);
+	$("#song-name").append(this.title);
+	
+	$("#artwork").empty();
+	$("#artwork").append('<img src="' +  this.image + '" height=' + (media_bar_height - 10) + ' width=' + media_bar_height + '>');
+};
 
 Tile.prototype.leftClick = function (id) {
 	console.log("left click.");
@@ -412,7 +430,7 @@ Tile.prototype.leftClick = function (id) {
 
 	}
 
-	this.fetchInfo();
+	this.displayInfo();
 
 };
 
