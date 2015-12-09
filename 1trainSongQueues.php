@@ -38,10 +38,10 @@
       $fullQueue = array();
   		$song = array();
 
-      $result = $conn->query("SELECT S.id as id, A.name as artist, S.title as title, S.artwork_url as art, Q.user as user  FROM 1trainSongQueue as Q, 1trainSongs as S, 1trainArtists as A WHERE Q.user='$user_id' and Q.id=S.id and S.artist=A.id GROUP BY Q.pos");
+      $result = $conn->query("SELECT S.id as id, A.name as artist, S.title as title, S.artwork_url as art, Q.user as user, Q.pos as position  FROM 1trainSongQueue as Q, 1trainSongs as S, 1trainArtists as A WHERE Q.user='$user_id' and Q.id=S.id and S.artist=A.id GROUP BY Q.pos");
       if($result) {
         while($row = $result->fetch_assoc()){
-          $song = array('user' => $row['user'], 'song' => $row['id'], 'title' => $row['title'], 'artist' => $row['artist'], 'art' => $row['art']);
+          $song = array('user' => $row['user'], 'song' => $row['id'], 'title' => $row['title'], 'artist' => $row['artist'], 'art' => $row['art'], 'position' => $row['position']);
   				$fullQueue[] = $song;
         }
         return $fullQueue;
@@ -50,14 +50,14 @@
       return null;
     }
 
-    public static function remove($user_id, $song_id) {
+    public static function remove($user_id, $song_id, $position) {
       $servername = "classroom.cs.unc.edu";
       $username = "tklose";
       $password = "TARheels21!!";
       $dbname = "tklosedb";
       $conn = new mysqli($servername, $username, $password, $dbname);
 
-      $delete = "DELETE FROM 1trainSongQueue WHERE user='$user_id' AND id='$song_id'";
+      $delete = "DELETE FROM 1trainSongQueue WHERE user='$user_id' AND id='$song_id' AND pos='$position'";
       $result = $conn->query($delete);
 
       if(!$result) {

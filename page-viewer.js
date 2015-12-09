@@ -11,19 +11,16 @@ var play_queue_showing = false;
 
 $(document).ready(function(){
 	//layout for media bar
-	$("#media-bar").css({ "height": media_bar_height });
-	$("#media-bar-wrapper > div > img").attr("height", media_bar_height);
-	$("#artwork").css({ "height": media_bar_height, "width": "52px", "left": media_bar_height / 4, "top": 5 });
-	$("#pause-button").hide();
-	$("#play-pause").css({ "left": media_bar_height * 1.5 });
-	$("#song-queue").css({ "right": "0" });
-	$("#video-queue").css({ "right": $("#song-queue").width() });
-	$("#reading-list").css({ "right": ($("#song-queue").width() * 2) - 20 });
-	$("#volume").css({ "right": $("#song-queue").width() * 3 - 10});
-	$("#muted").hide();
-	$('body').append($('<div id="play-queue"></div'));
-	$('#play-queue').css({ "height": "90%", "width": "50%", "background-color": "black", "position": "absolute", "top": 62, "right": 0, "color": "white", "overflow": "scroll" });
-	$('#play-queue').hide();
+	// $("#media-bar").css({ "height": media_bar_height });
+	// $("#media-bar-wrapper > div > img").attr("height", media_bar_height);
+	// $("#artwork").css({ "height": media_bar_height, "width": "52px", "left": media_bar_height / 4, "top": 5 });
+	// $("#pause-button").hide();
+	// $("#play-pause").css({ "left": media_bar_height * 1.5 });
+	// $("#song-queue").css({ "right": "0" });
+	// $("#video-queue").css({ "right": $("#song-queue").width() });
+	// $("#reading-list").css({ "right": ($("#song-queue").width() * 2) - 20 });
+	// $("#volume").css({ "right": $("#song-queue").width() * 3 - 10});
+	// $("#muted").hide();
 
 	$('#song-queue').on('mousedown', function (e) {
 		e.preventDefault();
@@ -33,7 +30,6 @@ $(document).ready(function(){
 		e.preventDefault();
 		if ((e.button == 0) && !e.shiftKey && !e.altKey)  {
 				$('#play-queue').empty();
-		    console.log('song-queue pressed');
 				if(!play_queue_showing){
 					show_play_queue();
 				} else {
@@ -49,7 +45,6 @@ $(document).ready(function(){
   $('#play-button').click(function (e) {
 		e.preventDefault();
 		if ((e.button == 0) && !e.shiftKey && !e.altKey)  {
-		    console.log('play-button pressed');
 				if(currently_playing) {
 					currently_playing.play();
 				}
@@ -63,11 +58,9 @@ $(document).ready(function(){
 	$('#pause-button').click(function (e) {
 		e.preventDefault();
 		if ((e.button == 0) && !e.shiftKey && !e.altKey)  {
-			console.log('pause-button pressed');
 			if(currently_playing) {
 				currently_playing.pause();
 			}
-		//console.log('x: ' + tile.x + ' y: ' + tile.y)
 		}
 	});
 
@@ -78,7 +71,6 @@ $(document).ready(function(){
 	$('#loud').click(function (e) {
 		e.preventDefault();
 		if ((e.button == 0) && !e.shiftKey && !e.altKey)  {
-			console.log("loud clicked");
 		    if(currently_playing) {
 		    	currently_playing.mute();
 		    }
@@ -93,7 +85,6 @@ $(document).ready(function(){
 	$('#muted').click(function (e) {
 		e.preventDefault();
 		if ((e.button == 0) && !e.shiftKey && !e.altKey)  {
-			console.log("muted clicked");
 		    if(currently_playing) {
 		    	currently_playing.loud();
 		    }
@@ -124,7 +115,7 @@ var get_user_info = function (){
 	$('#center').append($('<div id="logo-div"></div>'));
 	$('#logo-div').append($('#logo'));
 	$('#logo-div').css({ "position": "absolute", "top": ((window_height - media_bar_height) / 2) - ($('#logo').height() / (4/3)),
-												"width": "100%", "height": $('#logo').height() });
+												"width": "100%", "height": "265px" });
 	$('#logo').css({"position":"absolute", "left": window_width / 2 - $('#logo').width() / 2 });
 	//$('#logo').css({"position":"absolute", "top": -250, "left": window_width / 2 - $('#logo').width() / 2 });
 
@@ -147,18 +138,17 @@ var get_user_info = function (){
 		    //get tracks from my soundcloud favorites
 
 		    SC.get('/users/' + user + '/favorites').then( function(tracks) {
-		      // console.log(tracks);
 		      for (var i = 0; i < tracks.length; i++) {
 							tracks[i]['whoLikedID'] = user;
 							tracks[i]['whoLiked'] = profile;
 		          if (tracks[i]['streamable']) {
-		             $.ajax("uploadToDB.php",
+		             $.ajax("controller.php/upload",
 		             {
 		               type: "POST",
 		               dataType: "json",
 		               data: tracks[i],
-		               success: function(art, textStatus, jqXHR) { console.log('success'); },
-									 error: function(jqXHR, textStatus, error) { console.log(jqXHR.responseText); }
+		               success: function(art, textStatus, jqXHR) {  },
+									 error: function(jqXHR, textStatus, error) { console.log("error? jqXHR.responseText"); }
 		             });
 		           } else {
 		            console.log(tracks[i]['title'] + " is not streamable by api");
@@ -174,7 +164,13 @@ var get_user_info = function (){
 
 
 var switch_to_homepage = function (){
-	console.log('switched to homepage');
+	$('#media-bar-wrapper > *').css({ "visibility": "visible" });
+	$("#pause-button").hide();
+	$("#muted").hide();
+	$('body').append($('<div id="play-queue"></div'));
+ 	$('#play-queue').css({ "height": "90%", "width": "50%", "background-color": "black", "position": "absolute", "top": 62, "right": 0, "color": "white", "overflow": "scroll" });
+ 	$('#play-queue').hide();
+
 	var mainContent = $('#main-content');
 	mainContent.empty();
 
@@ -187,7 +183,7 @@ var switch_to_homepage = function (){
 	$('#center').append($('<div id="logo-div"></div>'));
 	$('#logo-div').append($('<img id="logo" src="photoshop/1train-logo-clean.png">'));
 	$('#logo-div').css({ "position": "relative", "top": ((window_height - media_bar_height) / 2) - ($('#logo').height() / (4/3)),
-												"width": "100%", "height": $('#logo').height() });
+												"width": "100%", "height": "265px" });
 	$('#logo').css({"position":"absolute", "left": window_width / 2 - $('#logo').width() / 2 });
 
 	$('#center').append($('<div id="links-div"></div>'));
@@ -206,7 +202,7 @@ var switch_to_homepage = function (){
 		type: "GET",
 		datatype: "json",
 		success: function(textStatus, jqXHR){
-			$('#links-div > #1').on('click', function(){console.log('switching to music'); switch_to_music(user);});
+			$('#links-div > #1').on('click', function(){ switch_to_music(user);});
 			$('#links-div > #2').on('click', switch_to_sports);
 			$('#links-div > #3').on('click', switch_to_about);
 		},
@@ -229,7 +225,7 @@ var switch_to_music = function () {
 	$('#left-top').css({ "position": "relative", "margin": "auto 0", "top": 0, "bottom": 0, "left": 0, "right": 0, "height": "50%", "width": "auto" });
 	$('#left-top').append($('<div id="logo-div"></div>'));
 	$('#logo-div').append($('<img id="logo" src="photoshop/1train-logo-clean.png">'));
-	$('#logo-div').css({ "position": "relative", "width": "100%", "height": $('#logo').height() });
+	$('#logo-div').css({ "position": "relative", "width": "100%", "height": "265px" });
 	$('#logo').css({ "position": "absolute", "left": ($('#logo-div').width() / 2) - ($('#logo').width() / 2),
  										"top":  ($('#left-top').height() / 2) - ($('#logo').height() / 2)});
 
@@ -238,7 +234,7 @@ var switch_to_music = function () {
 	$('#left-bottom').append($('<div id="info-div"></div>'));
 	$('#info-div').append($('<div id="artist"><div id="artist-label">artist: </div><div id="artist-name">  </div></div>'));
 	$('#info-div').append($('<div id="song"><div id="song-label">title: </div><div id="song-name">  </div></div>'));
-	$('#info-div').css({ "position": "relative", "width": "100%", "height": $('#logo').height() });
+	$('#info-div').css({ "position": "relative", "width": "100%", "height": "265px" });
 	$('#artist-label').css({ "position": "absolute", "left": 0, "width": "50%", "text-align": "center" });
 	$('#artist-name').css({ "position": "absolute", "right": 0, "width": "50%", "text-align": "left" });
 	$('#song-label').css({ "position": "absolute", "top": $('#artist-label').height(), "left": 0, "width": "50%", "text-align": "center" });
@@ -305,7 +301,6 @@ var switch_to_sports = function() {
 };
 
 var makePostsGrid = function (grid_div, win_wid, media_bar_height, songs) {
-	console.log(songs.length);
 	var numOfRows = songs.length / 2;
 	this.grid_div = grid_div;
 	this.tiles = new Array(numOfRows);
@@ -313,7 +308,6 @@ var makePostsGrid = function (grid_div, win_wid, media_bar_height, songs) {
 	grid_div.css({ "position": "absolute", "width": "100%" });
 
 	//make grid
-	console.log(numOfRows);
 	for (i = 0; i < numOfRows; i++) {
 		this.tiles[i] = new Array(2);
 		for (j = 0; j < 2; j++) {
@@ -333,7 +327,7 @@ var show_play_queue = function() {
 			$('#play-queue').empty();
 			for(var i = 0; i < queue.length; i++) {
 				song = queue[i];
-				new QueueRow(i+1, song['song'], song['title'], song['artist'], song['art']);
+				new QueueRow(i+1, song['song'], song['title'], song['artist'], song['art'], song['position']);
 			}
 
 		},
@@ -352,8 +346,6 @@ var hide_play_queue = function() {
 
 var Tile = function (i, j, song) {
 	//grab properties from song object passed it
-	console.log("song passed in: ");
-	console.log(song);
 	this.id = song.id;
 	this.title = song.title;
 	this.artist = song.artist;
@@ -378,9 +370,6 @@ var Tile = function (i, j, song) {
 		e.preventDefault();
 		if ((e.button == 0) && !e.shiftKey && !e.altKey)  {
 		    tile.leftClick(tile.id);
-		    console.log("artist: " + tile.artist);
-				// tile.fetchInfo();
-				//console.log('x: ' + tile.x + ' y: ' + tile.y)
 		} else if ((e.button == 0) && e.altKey) {
 		    tile.altClick();
 		} else if ((e.button == 0) && e.shiftKey) {
@@ -397,9 +386,7 @@ Tile.prototype.play = function(){
 	this.is_playing = true;
 	$('#play-button').hide();
 	$('#pause-button').show();
-	this.sound.play().catch(function(error){
-  alert('Error: ' + error.message)});
-	console.log("play-pause: play");
+	this.sound.play();
 }
 
 Tile.prototype.pause = function(){
@@ -407,21 +394,18 @@ Tile.prototype.pause = function(){
 	$('#pause-button').hide();
 	$('#play-button').show();
 	this.sound.pause();
-	console.log("play-pause: pause");
 }
 
 Tile.prototype.loud = function(){
 	this.sound.setVolume(1);
 	$('#muted').hide();
 	$('#loud').show();
-	console.log("louded");
 }
 
 Tile.prototype.mute = function(){
 	this.sound.setVolume(0);
 	$('#muted').show();
 	$('#loud').hide();
-	console.log("muted");
 }
 
 Tile.prototype.getTileDiv = function () {
@@ -443,7 +427,6 @@ Tile.prototype.displayInfo = function() {
 };
 
 Tile.prototype.leftClick = function (id) {
-	console.log("left click.");
 	var t = this;
 
 	if(t.sound) {
@@ -457,7 +440,8 @@ Tile.prototype.leftClick = function (id) {
 		SC.stream('/tracks/' + id).then(function(player){
 			t.sound = player;
 			t.play();
-		});
+		}).catch(function(error){
+	  alert('Error: ' + error.message)});
 
 	}
 
@@ -465,18 +449,17 @@ Tile.prototype.leftClick = function (id) {
 };
 
 Tile.prototype.shiftClick = function () {
-	console.log("shift click, this is to add songs to queue, not play them now.");
 	info = {};
 	info['user'] = user;
 	info['id'] = this.id;
-	console.log(info);
+	tile = this;
 
 	$.ajax("controller.php/queue",
 	{
 		type: "POST",
 		dataType: "json",
 		data: info,
-		success: function(queued, textStatus, jqXHR) { console.log(queued); },
+		success: function(queued, textStatus, jqXHR) {  },
 		error: function(jqXHR, textStatus, error) { console.log(jqXHR.responseText); }
 	});
 
@@ -486,14 +469,16 @@ Tile.prototype.altClick = function () {
 	console.log("alt click.");
 };
 
-var QueueRow = function (pos, song_id, song_title, artist_name, art) {
+var QueueRow = function (pos, song_id, song_title, artist_name, art, db_pos) {
 	this.id = song_id;
 	this.image = art;
 	this.title = song_title;
 	this.artist = artist_name;
+	this.db_pos = db_pos;
 	var queuerow = this;
 	this.is_playing = false;
 	this.sound;
+
 
 	img = $('<img style="position: absolute; right: 30px;" src="' + this.image + '" height="60" width="62">');
 	row = $('<div>' + pos + ' ' + this.title + ' by ' + this.artist + '</div>');
@@ -501,6 +486,7 @@ var QueueRow = function (pos, song_id, song_title, artist_name, art) {
 	row.css({ "position": "absolute", "top": "0", "width": "100%", "height": "62px", "line-height": "62px" });
 	this.row_div = $('<div style="position: relative; height: 62px; width: 99%; padding-left: 1%;"></div>')
 	this.row_div.append(row);
+
 	$('#play-queue').append(this.row_div);
 
 	this.row_div.on('mousedown', function (e) {
@@ -511,7 +497,6 @@ var QueueRow = function (pos, song_id, song_title, artist_name, art) {
 	this.row_div.click(function (e) {
 		e.preventDefault();
 		if ((e.button == 0) && !e.shiftKey && !e.altKey)  {
-				console.log('row in play queue clicked, song: ' + queuerow.id + ' would be played');
 				queuerow.leftClick(queuerow.id);
 
 		} else if ((e.button == 0) && e.shiftKey) {
@@ -523,7 +508,6 @@ var QueueRow = function (pos, song_id, song_title, artist_name, art) {
 };
 
 QueueRow.prototype.leftClick = function (id) {
-	console.log("left click.");
 	var t = this;
 
 	if(t.sound) {
@@ -539,28 +523,43 @@ QueueRow.prototype.leftClick = function (id) {
 		});
 
 	}
-
-	//this.displayInfo();
 };
 
 QueueRow.prototype.shiftClick = function () {
-	console.log("shift click on play queue, no longer want song in play queue.");
+	// info = {};
+	// info['user'] = user;
+	// info['id'] = this.id;
+
+	// $.ajax("controller.php/queue/" + user + "/" + this.id + "?delete=" + this.db_pos,
+	// {
+	// 	type: "GET",
+	// 	dataType: "json",
+	// 	success: function(queue, textStatus, jqXHR) {
+	// 		hide_play_queue();
+	// 		show_play_queue();
+	// 	},
+	// 	error: function(jqXHR, textStatus, error) { console.log(jqXHR.responseText); }
+	// });
+
+	delete_from_queue(this.id, this.db_pos);
+
+};
+
+var delete_from_queue = function ($id, $db_pos) {
 	info = {};
 	info['user'] = user;
-	info['id'] = this.id;
-	console.log(info);
+	info['id'] = $id;
 
-	$.ajax("controller.php/queue/" + user + "/" + this.id + "?delete",
+	$.ajax("controller.php/queue/" + user + "/" + $id + "?delete=" + $db_pos,
 	{
 		type: "GET",
 		dataType: "json",
 		success: function(queue, textStatus, jqXHR) {
 			hide_play_queue();
 			show_play_queue();
-			console.log("song removed"); },
+		},
 		error: function(jqXHR, textStatus, error) { console.log(jqXHR.responseText); }
 	});
-
 };
 
 QueueRow.prototype.isPlaying = function (){
@@ -569,8 +568,10 @@ QueueRow.prototype.isPlaying = function (){
 QueueRow.prototype.play = function(){
 	currently_playing = this;
 	this.is_playing = true;
+	this.displayInfo();
 	$('#play-button').hide();
 	$('#pause-button').show();
+	delete_from_queue(this.id, this.db_pos);
 	this.sound.play().catch(function(error){
   alert('Error: ' + error.message)});
 	console.log("queue row: play");
@@ -581,21 +582,18 @@ QueueRow.prototype.pause = function(){
 	$('#pause-button').hide();
 	$('#play-button').show();
 	this.sound.pause();
-	console.log("queue row: pause");
 }
 
 QueueRow.prototype.loud = function(){
 	this.sound.setVolume(1);
 	$('#muted').hide();
 	$('#loud').show();
-	console.log("louded");
 }
 
 QueueRow.prototype.mute = function(){
 	this.sound.setVolume(0);
 	$('#muted').show();
 	$('#loud').hide();
-	console.log("muted");
 }
 
 QueueRow.prototype.getRowDiv = function () {
@@ -613,5 +611,5 @@ QueueRow.prototype.displayInfo = function() {
 	$("#song-name").append(this.title);
 
 	$("#artwork").empty();
-	$("#artwork").append('<img src="' +  this.image + '" height=' + (media_bar_height - 10) + ' width=' + media_bar_height + '>');
+	$("#artwork").append('<img src="' +  this.image + '" height="' + (media_bar_height - 10) + '"" width=' + media_bar_height + '>');
 };
