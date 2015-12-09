@@ -13,7 +13,7 @@ $(document).ready(function(){
 	//layout for media bar
 	$("#media-bar").css({ "height": media_bar_height });
 	$("#media-bar-wrapper > div > img").attr("height", media_bar_height);
-	$("#artwork").css({ "height": media_bar_height, "width": media_bar_height, "left": media_bar_height / 4, "top": 5 });
+	$("#artwork").css({ "height": media_bar_height, "width": "52px", "left": media_bar_height / 4, "top": 5 });
 	$("#pause-button").hide();
 	$("#play-pause").css({ "left": media_bar_height * 1.5 });
 	$("#song-queue").css({ "right": "0" });
@@ -34,26 +34,11 @@ $(document).ready(function(){
 		if ((e.button == 0) && !e.shiftKey && !e.altKey)  {
 				$('#play-queue').empty();
 		    console.log('song-queue pressed');
-				$.ajax("controller.php/queue/" + user,{
-					type: "GET",
-					datatype: "json",
-					success: function(queue, textStatus, jqXHR){
-						if(play_queue_showing) {
-							hide_play_queue();
-						} else {
-							show_play_queue();
-						}
-
-						for(var i = 0; i < queue.length; i++) {
-							song = queue[i];
-							new QueueRow(i+1, song['song'], song['title'], song['artist'], song['art']);
-						}
-
-					},
-					error: function(jqXHR, textStatus, error){
-						console.log("error getting queue");
-					}
-				});
+				if(!play_queue_showing){
+					show_play_queue();
+				} else {
+					hide_play_queue();
+				}
 		}
   	});
 
@@ -251,8 +236,8 @@ var switch_to_music = function () {
  	$('#left').append($('<div id="left-bottom"></div>'));
 	$('#left-bottom').css({ "position": "relative", "margin": "auto 0", "top": 0, "bottom": 0, "left": 0, "right": 0, "height": "50%", "width": "auto", "font-size": "175%" });
 	$('#left-bottom').append($('<div id="info-div"></div>'));
-	$('#info-div').append($('<div id="artist"><div id="artist-label">artist: </div><div id="artist-name"> nothing is playing </div></div>'));
-	$('#info-div').append($('<div id="song"><div id="song-label">title: </div><div id="song-name"> nothing is playing </div></div>'));
+	$('#info-div').append($('<div id="artist"><div id="artist-label">artist: </div><div id="artist-name">  </div></div>'));
+	$('#info-div').append($('<div id="song"><div id="song-label">title: </div><div id="song-name">  </div></div>'));
 	$('#info-div').css({ "position": "relative", "width": "100%", "height": $('#logo').height() });
 	$('#artist-label').css({ "position": "absolute", "left": 0, "width": "50%", "text-align": "center" });
 	$('#artist-name').css({ "position": "absolute", "right": 0, "width": "50%", "text-align": "left" });
@@ -341,6 +326,21 @@ var makePostsGrid = function (grid_div, win_wid, media_bar_height, songs) {
 };
 
 var show_play_queue = function() {
+	$.ajax("controller.php/queue/" + user,{
+		type: "GET",
+		datatype: "json",
+		success: function(queue, textStatus, jqXHR){
+			$('#play-queue').empty();
+			for(var i = 0; i < queue.length; i++) {
+				song = queue[i];
+				new QueueRow(i+1, song['song'], song['title'], song['artist'], song['art']);
+			}
+
+		},
+		error: function(jqXHR, textStatus, error){
+			console.log("error getting queue");
+		}
+	});
 	$('#play-queue').show();
 	play_queue_showing = true;
 };
@@ -397,7 +397,8 @@ Tile.prototype.play = function(){
 	this.is_playing = true;
 	$('#play-button').hide();
 	$('#pause-button').show();
-	this.sound.play();
+	this.sound.play().catch(function(error){
+  alert('Error: ' + error.message)});
 	console.log("play-pause: play");
 }
 
@@ -450,15 +451,10 @@ Tile.prototype.leftClick = function (id) {
 		if(t.isPlaying()){
 				t.pause();
 			} else if(!t.isPlaying()){
-
 				t.play();
 			 }
 	} else {
-		// SC.get('/tracks/' + id).then(function(track){$('#player').html(track.title);})
 		SC.stream('/tracks/' + id).then(function(player){
-			// console.log("cool")
-			// console.log(this.isPlaying());
-			//player.play();
 			t.sound = player;
 			t.play();
 		});
@@ -518,6 +514,8 @@ var QueueRow = function (pos, song_id, song_title, artist_name, art) {
 				console.log('row in play queue clicked, song: ' + queuerow.id + ' would be played');
 				queuerow.leftClick(queuerow.id);
 
+		} else if ((e.button == 0) && e.shiftKey) {
+		    queuerow.shiftClick();
 		}
 	});
 
@@ -545,6 +543,26 @@ QueueRow.prototype.leftClick = function (id) {
 	//this.displayInfo();
 };
 
+QueueRow.prototype.shiftClick = function () {
+	console.log("shift click on play queue, no longer want song in play queue.");
+	info = {};
+	info['user'] = user;
+	info['id'] = this.id;
+	console.log(info);
+
+	$.ajax("controller.php/queue/" + user + "/" + this.id + "?delete",
+	{
+		type: "GET",
+		dataType: "json",
+		success: function(queue, textStatus, jqXHR) {
+			hide_play_queue();
+			show_play_queue();
+			console.log("song removed"); },
+		error: function(jqXHR, textStatus, error) { console.log(jqXHR.responseText); }
+	});
+
+};
+
 QueueRow.prototype.isPlaying = function (){
 	return this.is_playing;
 }
@@ -553,7 +571,8 @@ QueueRow.prototype.play = function(){
 	this.is_playing = true;
 	$('#play-button').hide();
 	$('#pause-button').show();
-	this.sound.play();
+	this.sound.play().catch(function(error){
+  alert('Error: ' + error.message)});
 	console.log("queue row: play");
 }
 

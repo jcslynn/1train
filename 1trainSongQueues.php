@@ -50,6 +50,23 @@
       return null;
     }
 
+    public static function remove($user_id, $song_id) {
+      $servername = "classroom.cs.unc.edu";
+      $username = "tklose";
+      $password = "TARheels21!!";
+      $dbname = "tklosedb";
+      $conn = new mysqli($servername, $username, $password, $dbname);
+
+      $delete = "DELETE FROM 1trainSongQueue WHERE user='$user_id' AND id='$song_id'";
+      $result = $conn->query($delete);
+
+      if(!$result) {
+        echo "error removing song from queue database" . $conn->error;
+      }
+
+      return SongQueue::getUsersQueue($user_id);
+    }
+
     public function getJSON(){
       $json_obj = array("user" => $this->user,
   						  "song" => $this->song,

@@ -67,13 +67,34 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
         foreach (SongQueue::getUsersQueue($user) as $idx => $song) {
           $queue[] = array('user' => $song['user'], 'song' => $song['song'], 'title' => $song['title'], 'artist' => $song['artist'], 'art' => $song['art']);
         }
+
+        header('Content-type: application/json');
+    		print(json_encode($queue));
+    		exit();
+        }
+
+
         header('Content-type: application/json');
     		print(json_encode($queue));
     		exit();
     }
 
+    if(count($resource_components) == 4){
+      if (isset($_REQUEST['delete'])){
+        $delete = explode("?", $resource_components[3]);
+          $song_id = $delete[0];
+          $user = $resource_components[2];
+          $queue;
+          foreach (SongQueue::remove($user, $song_id) as $idx => $song) {
+            $queue[] = array('user' => $song['user'], 'song' => $song['song'], 'title' => $song['title'], 'artist' => $song['artist'], 'art' => $song['art']);
+          }
+          header('Content-type: application/json');
+          print(json_encode($queue));
+          exit();
+    }
+
   	header('Content-type: application/json');
-  	print($song->getJSON());
+  	print("nada");
   	exit();
     }
   }

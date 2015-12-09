@@ -18,9 +18,9 @@ class Songs{
 		$conn = new mysqli($servername, $username, $password, $dbname);
 
 
-    	$addSong = "INSERT INTO 1trainSongs (id, title, artist, artwork_url, user_id)
-	                VALUES ('$songid', '$title', '$artistid', '$art', '$user_id')
-	                ON DUPLICATE KEY UPDATE title=title";
+  	$addSong = "INSERT INTO 1trainSongs (id, title, artist, artwork_url, user_id)
+                VALUES ('$songid', '$title', '$artistid', '$art', '$user_id')
+                ON DUPLICATE KEY UPDATE title=title";
 
 		if($conn->query($addSong) === TRUE){
 			$getNum = "SELECT num FROM 1trainSongs WHERE id='$songid";
