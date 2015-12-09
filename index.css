@@ -116,3 +116,10 @@ html {
 #volume{
 	right: 362px;
 }
+
+#update-song {
+	padding: 10px 15px;
+    background: black;
+    color: white;
+		font-family: "hobo-std";
+	}

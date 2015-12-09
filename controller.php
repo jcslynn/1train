@@ -43,8 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
   		  $plist = array();
 
     		foreach (Songs::getPostListByUser($user) as $idx => $post) {
-    			$plist[] = array('id' => $post['id'], 'title' => $post['title'], 'artist' => $post['artist'], 'artwork_url' => $post['artwork_url']);
-    		// print(json_encode($plist));
+    			$plist[] = array('id' => $post['id'], 'title' => $post['title'], 'a_id' => $post['artist_id'], 'artist' => $post['artist'], 'artwork_url' => $post['artwork_url']);
     		}
 
   		header('Content-type: application/json');
@@ -65,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
     } else if ($resource_type == 'queue') {
         $user = $resource_components[2];
         foreach (SongQueue::getUsersQueue($user) as $idx => $song) {
-          $queue[] = array('user' => $song['user'], 'song' => $song['song'], 'title' => $song['title'], 'artist' => $song['artist'], 'art' => $song['art'], 'position' => $song['position']);
+          $queue[] = array('user' => $song['user'], 'song' => $song['song'], 'title' => $song['title'], 'a_id' => $song['artist_id'], 'artist' => $song['artist'], 'art' => $song['art'], 'position' => $song['position']);
         }
 
         header('Content-type: application/json');
@@ -130,6 +129,18 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 
             header('Content-type: application/json');
             print("success from uploadToDB");
+            exit();
+        } else if ($resource_type == 'update') {
+            print($_REQUEST['artist_id']);
+            $songid = $_REQUEST['id'];
+          	$title = $_REQUEST['song_name'];
+          	$artistid = $_REQUEST['artist_id'];
+          	$artistname = $_REQUEST['artistname'];
+            Songs::update($songid, $title);
+            Artists::update($artistid, $artistname);
+
+            header('Content-type: application/json');
+            print("successful update");
             exit();
         }
   }

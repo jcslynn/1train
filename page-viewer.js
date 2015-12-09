@@ -165,7 +165,15 @@ var get_user_info = function (){
 
 var switch_to_homepage = function (){
 	$('#media-bar-wrapper > *').css({ "visibility": "visible" });
-	$("#pause-button").hide();
+	$('#pause-button').hide();
+	if(currently_playing) {
+		if(currently_playing.isPlaying()) {
+			$('#pause-button').show();
+		} else {
+			$('#play-button').show();
+		}
+	}
+
 	$("#muted").hide();
 	$('body').append($('<div id="play-queue"></div'));
  	$('#play-queue').css({ "height": "90%", "width": "50%", "background-color": "black", "position": "absolute", "top": 62, "right": 0, "color": "white", "overflow": "scroll" });
@@ -239,12 +247,32 @@ var switch_to_music = function () {
 	$('#artist-name').css({ "position": "absolute", "right": 0, "width": "50%", "text-align": "left" });
 	$('#song-label').css({ "position": "absolute", "top": $('#artist-label').height(), "left": 0, "width": "50%", "text-align": "center" });
 	$('#song-name').css({ "position": "absolute", "top": $('#artist-label').height(), "right": 0, "width": "50%", "text-align": "left" });
+	$('#info-div').append($('<input type="submit" id="update-song" value="Update Song Info">'));
+	$('#update-song').css({ "position": "absolute", "top": "75%", "left": "50%" });
 
+	$('#update-song').on('mousedown', function (e) {
+		e.preventDefault();
+	});
+
+	$('#update-song').click(function (e) {
+			e.preventDefault();
+			if ((e.button == 0))  {
+					update_song_info();
+			}
+	  	});
+
+	if(!currently_playing){
+		$('#update-song').prop("disabled", true);
+	}
 	mainContent.append($('<div id="right"></div>'));
 	$('#right').css({ "width": "50%", "height": "100%", "position": "absolute", "top": 0, "right": 0 });
 	$('#right').append($('<div id="grid"></div>'));
 
-	$('#grid').css({ "height": "87.5%", "overflow": "scroll", "margin-top": "5%" });
+	$('#grid').css({ "height": "87.5%", "overflow": "scroll", "margin-top": "5%", "background-color": "white" });
+
+	if(currently_playing) {
+		currently_playing.displayInfo();
+	}
 
 	$.ajax("controller.php/posts/" + user, {
 		type: "GET",
@@ -312,6 +340,7 @@ var makePostsGrid = function (grid_div, win_wid, media_bar_height, songs) {
 		this.tiles[i] = new Array(2);
 		for (j = 0; j < 2; j++) {
 			//make new space, hand in grid div and image -- changed it to handing in the song object
+			console.log("from make grid: " + songs[i * 2 + j].a_id);
 			var tile = new Tile(i, j, songs[i * 2 + j]);
 			this.tiles[i][j] = tile;
 			grid_div.append(tile.getTileDiv());
@@ -327,7 +356,7 @@ var show_play_queue = function() {
 			$('#play-queue').empty();
 			for(var i = 0; i < queue.length; i++) {
 				song = queue[i];
-				new QueueRow(i+1, song['song'], song['title'], song['artist'], song['art'], song['position']);
+				new QueueRow(i+1, song['song'], song['title'], song['a_id'], song['artist'], song['art'], song['position']);
 			}
 
 		},
@@ -348,6 +377,7 @@ var Tile = function (i, j, song) {
 	//grab properties from song object passed it
 	this.id = song.id;
 	this.title = song.title;
+	this.artist_id = song.a_id;
 	this.artist = song.artist;
 	this.image = song.artwork_url;
 	this.x = j;
@@ -424,6 +454,7 @@ Tile.prototype.displayInfo = function() {
 
 	$("#artwork").empty();
 	$("#artwork").append('<img src="' +  this.image + '" height=' + (media_bar_height - 10) + ' width=' + media_bar_height + '>');
+	$('#update-song').prop("disabled", false);
 };
 
 Tile.prototype.leftClick = function (id) {
@@ -469,10 +500,11 @@ Tile.prototype.altClick = function () {
 	console.log("alt click.");
 };
 
-var QueueRow = function (pos, song_id, song_title, artist_name, art, db_pos) {
+var QueueRow = function (pos, song_id, song_title, a_id, artist_name, art, db_pos) {
 	this.id = song_id;
 	this.image = art;
 	this.title = song_title;
+	this.artist_id = a_id;
 	this.artist = artist_name;
 	this.db_pos = db_pos;
 	var queuerow = this;
@@ -567,6 +599,7 @@ QueueRow.prototype.isPlaying = function (){
 }
 QueueRow.prototype.play = function(){
 	currently_playing = this;
+	console.log("current artist id:" + currently_playing.artist_id);
 	this.is_playing = true;
 	this.displayInfo();
 	$('#play-button').hide();
@@ -575,6 +608,7 @@ QueueRow.prototype.play = function(){
 	this.sound.play().catch(function(error){
   alert('Error: ' + error.message)});
 	console.log("queue row: play");
+
 }
 
 QueueRow.prototype.pause = function(){
@@ -594,7 +628,7 @@ QueueRow.prototype.mute = function(){
 	this.sound.setVolume(0);
 	$('#muted').show();
 	$('#loud').hide();
-}
+};
 
 QueueRow.prototype.getRowDiv = function () {
 	return this.row_div;
@@ -612,4 +646,34 @@ QueueRow.prototype.displayInfo = function() {
 
 	$("#artwork").empty();
 	$("#artwork").append('<img src="' +  this.image + '" height="' + (media_bar_height - 10) + '"" width=' + media_bar_height + '>');
+	$('#update-song').prop("disabled", false);
+};
+
+var update_song_info = function () {
+	var artist = prompt("Please enter the artist's name", "Harry Potter");
+	var title = prompt("Please enter the song's name", "Harry Potter");
+
+	info = {};
+	info['id'] = currently_playing.id;
+	info['song_name'] = title;
+	info['artist_id'] = currently_playing.artist_id;
+	info['artistname'] = artist;
+	console.log("current artist id:" + currently_playing.artist_id + " UPDATE WITH NAME: " + artist);
+
+
+	$.ajax("controller.php/update",
+	{
+		type: "POST",
+		dataType: "json",
+		data: info,
+		success: function(art, textStatus, jqXHR) {
+
+		},
+		error: function(jqXHR, textStatus, error) { console.log("error? jqXHR.responseText"); }
+	});
+
+	currently_playing.title =  info['song_name'];
+	currently_playing.artist =  info['artistname'];
+	currently_playing.displayInfo();
+
 };

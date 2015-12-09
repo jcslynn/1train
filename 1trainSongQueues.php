@@ -38,10 +38,10 @@
       $fullQueue = array();
   		$song = array();
 
-      $result = $conn->query("SELECT S.id as id, A.name as artist, S.title as title, S.artwork_url as art, Q.user as user, Q.pos as position  FROM 1trainSongQueue as Q, 1trainSongs as S, 1trainArtists as A WHERE Q.user='$user_id' and Q.id=S.id and S.artist=A.id GROUP BY Q.pos");
+      $result = $conn->query("SELECT S.id as id, A.id as artist_id, A.name as artist, S.title as title, S.artwork_url as art, Q.user as user, Q.pos as position  FROM 1trainSongQueue as Q, 1trainSongs as S, 1trainArtists as A WHERE Q.user='$user_id' and Q.id=S.id and S.artist=A.id GROUP BY Q.pos");
       if($result) {
         while($row = $result->fetch_assoc()){
-          $song = array('user' => $row['user'], 'song' => $row['id'], 'title' => $row['title'], 'artist' => $row['artist'], 'art' => $row['art'], 'position' => $row['position']);
+          $song = array('user' => $row['user'], 'song' => $row['id'], 'title' => $row['title'], 'artist_id' => $row['artist_id'], 'artist' => $row['artist'], 'art' => $row['art'], 'position' => $row['position']);
   				$fullQueue[] = $song;
         }
         return $fullQueue;

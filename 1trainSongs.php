@@ -102,7 +102,7 @@ class Songs{
 					$artistname = $artistrow['name'];
 				}
 
-				$post = array('id' => $row['id'], 'title' => $row['title'], 'artist' => $artistname, 'artwork_url' => $row['artwork_url']);
+				$post = array('id' => $row['id'], 'title' => $row['title'], 'artist_id' => $artistid, 'artist' => $artistname, 'artwork_url' => $row['artwork_url']);
 				$list[] = $post;
 			}
 		}
@@ -155,6 +155,18 @@ class Songs{
 		else{
 			return false;
 		}
+	}
+
+	public static function update($song_id, $newsong) {
+		$servername = "classroom.cs.unc.edu";
+		$username = "tklose";
+		$password = "TARheels21!!";
+		$dbname = "tklosedb";
+		$conn = new mysqli($servername, $username, $password, $dbname);
+
+		$update_song = "UPDATE 1trainSongs SET title='$newsong' WHERE id='$song_id'";
+
+		$result = $conn->query($update_song);
 	}
 
 	private function __construct($songid, $title, $artistid, $artistname, $art, $num, $user_id){
