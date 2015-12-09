@@ -8,6 +8,7 @@ class Songs{
 	private $art;
 	private $num;
 	private $user_id;
+	private $pos;
 
 	public static function create($songid, $title, $artistid, $art, $user_id){
 		$servername = "classroom.cs.unc.edu";
@@ -29,12 +30,12 @@ class Songs{
 				$artistid = $row['artistid'];
 				$getArtistQuery = "SELECT name FROM 1trainArtists WHERE id='$artistid'";
 				$r = $conn->query($getArtistQuery);
-				
+
 				if($r->num_rows > 0) {
 					$artistrow = $r->fetch_assoc();
 					$artistname = $artistrow['name'];
 				}
-				
+
 				$row = $rows->fetch_assoc();
 				$num = $row['num'];
 				return new Songs($songid, $title, $artistid, $artistname, $art, $num, $user_id);
@@ -64,12 +65,12 @@ class Songs{
 			$artistid = $row['artistid'];
 			$getArtistQuery = "SELECT name FROM 1trainArtists WHERE id='$artistid'";
 			$r = $conn->query($getArtistQuery);
-			
+
 			if($r->num_rows > 0) {
 				$artistrow = $r->fetch_assoc();
 				$artistname = $artistrow['name'];
 			}
-			
+
 			$post = array('id' => $row['id'], 'title' => $row['title'], 'artist' => $artistname, 'artwork_url' => $row['artwork_url']);
 			$list[] = $post;
 		}
@@ -95,12 +96,12 @@ class Songs{
 				$artistid = $row['artist'];
 				$getArtistQuery = "SELECT name FROM 1trainArtists WHERE id='$artistid'";
 				$r = $conn->query($getArtistQuery);
-				
+
 				if($r->num_rows > 0) {
 					$artistrow = $r->fetch_assoc();
 					$artistname = $artistrow['name'];
 				}
-				
+
 				$post = array('id' => $row['id'], 'title' => $row['title'], 'artist' => $artistname, 'artwork_url' => $row['artwork_url']);
 				$list[] = $post;
 			}
@@ -124,15 +125,15 @@ class Songs{
 		if($result->num_rows > 0 ){
 			$row = $result->fetch_assoc();
 			$artistname;
-			$artistid = $row['artistid'];
+			$artistid = $row['artist'];
 			$getArtistQuery = "SELECT name FROM 1trainArtists WHERE id='$artistid'";
 			$r = $conn->query($getArtistQuery);
-			
+
 			if($r->num_rows > 0) {
 				$artistrow = $r->fetch_assoc();
 				$artistname = $artistrow['name'];
 			}
-			
+
 			return new Songs(intval($row['id']), $row['title'], intval($row['artist']), $artistname, $row['artwork_url'], $row['num'], $row['user_id']);
 			// return "cool";
 		}

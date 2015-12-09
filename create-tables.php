@@ -11,9 +11,10 @@
 	    die("Connection failed: " . $conn->connect_error);
 	}
 
-	$dropQueue = "DROP TABLE if exists 1trainQueue";
-	if ($conn->query($dropQueue) === FALSE) {
-			echo "Error dropping table 1trainQueue: " . $conn->error;
+	$dropSongQueue = "DROP TABLE if exists 1trainSongQueue";
+
+	if ($conn->query($dropSongQueue) === FALSE) {
+			echo "Error dropping table 1trainSongQueue: " . $conn->error;
 	}
 
 	$dropSongs = "DROP TABLE if exists 1trainSongs";
@@ -31,7 +32,7 @@
 	$dropUsers = "DROP TABLE if exists 1trainUsers";
 
 	if ($conn->query($dropUsers) === FALSE) {
-			echo "Error dropping table 1trainArtists: " . $conn->error;
+			echo "Error dropping table 1trainUsers: " . $conn->error;
 	}
 
 	$createUsers = "CREATE TABLE 1trainUsers (
@@ -60,20 +61,23 @@
 									artwork_url CHAR(255),
 									user_id INT,
 			            FOREIGN KEY (artist) REFERENCES 1trainArtists(id),
-									FOREIGN KEY (user_id) REFERENCES 1trainUsers(user_id)
+									FOREIGN KEY (user_id) REFERENCES 1trainUsers(user_id),
+									UNIQUE KEY (id)
 									)";
 
 	if ($conn->query($createSongs) === FALSE) {
     	echo "Error creating table 1trainSongs: " . $conn->error;
 	}
 
-	$createQueue = "CREATE TABLE 1trainQueue (
-										queue_pos INT PRIMARY KEY AUTO_INCREMENT,
-										id INT,
-										FOREIGN KEY (id) REFERENCES 1trainSongs(num)
-										)";
+	$createSongQueue = "CREATE TABLE 1trainSongQueue (
+											pos INT PRIMARY KEY AUTO_INCREMENT,
+											user INT,
+											id INT,
+											FOREIGN KEY (user) REFERENCES 1trainUsers (user_id),
+											FOREIGN KEY (id) REFERENCES 1trainSongs (id)
+											)";
 
-	if ($conn->query($createQueue) === FALSE) {
-    	echo "Error creating table 1trainQueue: " . $conn->error;
+	if ($conn->query($createSongQueue) === FALSE) {
+    	echo "Error creating table 1trainSongQueue: " . $conn->error;
 	}
 ?>
