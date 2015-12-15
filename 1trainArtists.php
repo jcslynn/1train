@@ -54,7 +54,19 @@ class Artists{
 	public function getJSON(){
 		$json_obj = array("id" => $this->artistid,
 						  "name" => $this->artist);
-		return json_encode($json_obj);	
+		return json_encode($json_obj);
+	}
+
+	public static function update($artist_id, $newartist) {
+		$servername = "classroom.cs.unc.edu";
+		$username = "tklose";
+		$password = "TARheels21!!";
+		$dbname = "tklosedb";
+		$conn = new mysqli($servername, $username, $password, $dbname);
+
+		$update_artist = "UPDATE 1trainArtists SET name='$newartist' WHERE id='$artist_id'";
+
+		$result = $conn->query($update_artist);
 	}
 }
 

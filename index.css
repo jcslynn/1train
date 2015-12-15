@@ -1,7 +1,7 @@
 body{
 	margin: auto;
 	padding: 0;
- 
+
 }
 html {
 	background-color: white;
@@ -78,24 +78,32 @@ html {
 #logo:hover{
 	cursor: pointer;
 }
-#media-bar{ height: 62px }
+
+
+#media-bar{
+	height: 62px
+}
 
 #media-bar-wrapper > div > img {
 	height : 62px;
 }
 
-#artwork{ 
+#media-bar-wrapper > * {
+	visibility: hidden;
+}
+
+#artwork{
 	height: 62px;
 	width: 62px;
 	left: 15.5px;
 	top: 5;
 }
 
-#play-pause{ 
+#play-pause{
 	left: 93px;
 }
 
-#song-queue{ 
+#song-queue{
 	right: 0;
 }
 
@@ -105,7 +113,13 @@ html {
 #reading-list{
 	right: 228px;
 }
-#volume{ 
+#volume{
 	right: 362px;
 }
 
+#update-song {
+	padding: 10px 15px;
+    background: black;
+    color: white;
+		font-family: "hobo-std";
+	}
